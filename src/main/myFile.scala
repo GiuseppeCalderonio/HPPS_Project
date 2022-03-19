@@ -186,7 +186,7 @@ class MyTileModuleImp(outer: MyTile) extends BaseTileModuleImp(outer){
   // connect to core
    outer.memAXI4Node.out foreach { case (out, edgeOut) =>
 
-
+    out.apply(new AXI4BundleParameters(0, io.out, 0, Nil, Nil, Nil))
      
     // Connect your module IO port to "out"
     // The type of "out" here is AXI4Bundle, which is defined in generators/rocket-chip/src/main/scala/amba/axi4/Bundles.scala
@@ -230,3 +230,8 @@ class WithNMyCores(n: Int = 1, overrideIdOffset: Option[Int] = None) extends Con
   // The # of instruction bits. Use maximum # of bits if your core supports both 32 and 64 bits.
   case XLen => 64
 })
+
+
+class MyConfig extends Config(
+  new WithNMyCores(1) ++  // add 1 rocket core
+  new chipyard.config.AbstractConfig)

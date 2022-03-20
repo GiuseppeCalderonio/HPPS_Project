@@ -231,6 +231,7 @@ class WithNMyCores(n: Int = 1, overrideIdOffset: Option[Int] = None) extends Con
   case XLen => 64
 })
 
+// comment
 
 class MyConfig extends Config(
   new WithNMyCores(1) ++  // add 1 rocket core

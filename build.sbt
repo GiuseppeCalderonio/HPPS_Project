@@ -6,9 +6,10 @@ name := "HPPS_Project"
 
 scalaVersion := "2.12.4"
 
-lazy val yourproject = (project in file("generators/HPPS_Project")).settings(commonSettings).dependsOn(rocketchip)
 
-
-
-//to use it as a dependendy for other projects (here chipyard for ex since "." is chipyard):
-//lazy val chipyard = (project in file(".")).settings(commonSettings).dependsOn(testchipip, HPPS_Project)
+libraryDependencies ++=Seq(
+  "edu.berkeley.cs" %% "chisel3" % "3.4.+",
+  "edu.berkeley.cs" %% "rocketchip" % "1.2.+",
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+  "edu.berkeley.cs" %% "chisel-iotesters" % "1.5.+",
+)

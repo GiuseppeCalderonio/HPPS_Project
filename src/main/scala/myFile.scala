@@ -233,6 +233,6 @@ class WithNMyCores(n: Int = 1, overrideIdOffset: Option[Int] = None) extends Con
 
 // comment
 
-class MyConfig extends Config(
+class SorcConfig extends Config(
   new WithNMyCores(1) ++  // add 1 rocket core
   new chipyard.config.AbstractConfig)

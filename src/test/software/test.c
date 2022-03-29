@@ -8,11 +8,11 @@ int main(){
 
     printf("Start simulation\n");
 
-    ROCC_INSTRUCTION_DSS(0, a, 4, 3, 0);
+    ROCC_INSTRUCTION_DSS(0, a, 3, 3, 0);
 
     printf("End simulation, result is %d \n", a);
 
-    return a;
+    return 0;
 }
 
 /*

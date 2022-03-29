@@ -1,4 +1,9 @@
-package HPPS_Project
+package torus
+
+import chisel3._
+import freechips.rocketchip.config.{Config, Parameters}
+import freechips.rocketchip.diplomacy.LazyModule
+import freechips.rocketchip.tile._
 
 class TorusTemplate extends Config((site, here, up) => {
     case BuildRoCC => Seq((p: Parameters) => {

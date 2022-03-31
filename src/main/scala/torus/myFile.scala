@@ -25,42 +25,24 @@ class RoCCInstructionCustom extends Bundle {
   val opcode = Bits(7.W)
 }
 
-class RoCCCommandCustom(implicit p: Parameters) extends CoreBundle()(p) {
+class RoCCCommandCustom() extends Bundle() {
   val inst = new RoCCInstructionCustom
-  val rs1 = Bits(xLen.W)
-  val rs2 = Bits(xLen.W)
+  val rs1 = Bits(32.W)
+  val rs2 = Bits(32.W)
 }
 
-class RoCCResponseCustom(implicit p: Parameters) extends CoreBundle()(p) {
+class RoCCResponseCustom() extends Bundle() {
   val rd = Bits(5.W)
-  val data = Bits(xLen.W)
+  val data = Bits(32.W)
 }
 
-class RoCCCoreIOCustom(implicit p: Parameters) extends CoreBundle()(p) {
+class RoCCCoreIOCustom() extends Bundle() {
   val cmd = Flipped(Decoupled(new RoCCCommandCustom)) // inputs : bits, valid (out : ready)
   val resp = Decoupled(new RoCCResponseCustom) // inputs : ready (out : bits, valid)
 }
 
-class LazyRoCCModuleImpCustom(implicit p: Parameters) extends Module{
+class LazyRoCCModuleImpCustom() extends Module{
   val io = IO(new RoCCCoreIOCustom())
-}
-
-class CustomInterface extends Module{
-  val io = IO(new Bundle{
-    val cmd_ready = Output(Bool())
-    val cmd_valid = Input(Bool())
-    val cmd_bits_rs1 = Input(Bits(32.W))
-    val cmd_bits_rs2 = Input(Bits(32.W))
-    val cmd_bits_instr_funct = Input(Bits(7.W))
-    val cmd_bits_instr_rs1 = Input(Bits(5.W))
-    val cmd_bits_instr_rs2 = Input(Bits(5.W))
-    val cmd_bits_instr_xd = Input(Bool())
-    val cmd_bits_instr_xs1 = Input(Bool())
-    val cmd_bits_instr_xs2 = Input(Bool())
-    val cmd_bits_instr_opcode = Input(Bits(7.W))
-    val cmd_bits_instr_rd = Input(Bits(5.W))
-  })
-
 }
 
   class TorusAccelerator(opcodes: OpcodeSet) (implicit p: Parameters) extends LazyRoCC(opcodes) {
@@ -69,7 +51,9 @@ class CustomInterface extends Module{
 
 class TorusAcceleratorModule(outer: TorusAccelerator) extends LazyRoCCModuleImp(outer) {
   val cmd = Queue(io.cmd)
-  val myModuleImpl = new TorusAcceleratorModuleImpl()
+  val myModuleImpl = Module(new TorusAcceleratorModuleImpl())
+
+  // inputs for my module
   myModuleImpl.io.cmd.valid := cmd.valid
   myModuleImpl.io.cmd.bits.rs1 := cmd.bits.rs1
   myModuleImpl.io.cmd.bits.rs2 := cmd.bits.rs2
@@ -83,36 +67,26 @@ class TorusAcceleratorModule(outer: TorusAccelerator) extends LazyRoCCModuleImp(
   myModuleImpl.io.cmd.bits.inst.opcode := cmd.bits.inst.opcode
   myModuleImpl.io.resp.ready := io.resp.ready
 
-  // my code which sets:
-    // myModuleImpl.io.cmd.ready
-    // myModuleImpl.io.resp.valid
-    // myModuleImpl.io.resp.bits.rd
-    // myModuleImpl.io.resp.bits.data
+  // outputs for my module
 
   cmd.ready := myModuleImpl.io.cmd.ready
   io.resp.valid := myModuleImpl.io.resp.valid 
   io.resp.bits.rd := myModuleImpl.io.resp.bits.rd
   io.resp.bits.data := myModuleImpl.io.resp.bits.data
   
-
-  /*
-  val resp = io.resp
-  val rs1 = cmd.bits.rs1
-  val rs2 = cmd.bits.rs2
-  cmd.ready := true.B
-  resp.valid := true.B
-  resp.bits.rd := 3.U
-  resp.bits.data := rs1 + rs2
-  */
-  
 }
 
-class TorusAcceleratorModuleImpl(implicit p: Parameters) extends LazyRoCCModuleImpCustom{
+class TorusAcceleratorModuleImpl() extends LazyRoCCModuleImpCustom{
 
+  // execute the sum of the 2 arguments
   val sum = io.cmd.bits.rs1 + io.cmd.bits.rs2
   io.cmd.ready := true.B
   io.resp.valid := true.B 
-  io.resp.bits.rd := sum
+  io.resp.bits.rd := 0.U
   io.resp.bits.data := sum
 
 }
+
+
+/////////////////////////////////test file content //////////////////
+

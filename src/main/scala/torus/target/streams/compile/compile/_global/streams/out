@@ -1,0 +1,301 @@
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:4:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:5:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3.util._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:6:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3.iotesters._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:7:12: object scalatest is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.scalatest._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:8:8: not found: object freechips[0m
+[0m[[0m[31merror[0m] [0m[0mimport freechips.rocketchip.tile._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:9:8: not found: object freechips[0m
+[0m[[0m[31merror[0m] [0m[0mimport freechips.rocketchip.diplomacy.LazyModule[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:10:8: not found: object freechips[0m
+[0m[[0m[31merror[0m] [0m[0mimport freechips.rocketchip.config.{Config, Parameters}[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:11:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3.util.HasBlackBoxResource[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:12:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3.experimental.IntParam[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:13:8: not found: object freechips[0m
+[0m[[0m[31merror[0m] [0m[0mimport freechips.rocketchip.config._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:14:8: not found: object freechips[0m
+[0m[[0m[31merror[0m] [0m[0mimport freechips.rocketchip.diplomacy._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:15:8: not found: object freechips[0m
+[0m[[0m[31merror[0m] [0m[0mimport freechips.rocketchip.rocket._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:16:8: not found: object freechips[0m
+[0m[[0m[31merror[0m] [0m[0mimport freechips.rocketchip.tilelink._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:17:8: not found: object freechips[0m
+[0m[[0m[31merror[0m] [0m[0mimport freechips.rocketchip.util.InOrderArbiter[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:19:37: not found: type Bundle[0m
+[0m[[0m[31merror[0m] [0m[0mclass RoCCInstructionCustom extends Bundle {[0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:20:15: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m  val funct = Bits(7.W)[0m
+[0m[[0m[31merror[0m] [0m[0m              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:20:22: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val funct = Bits(7.W)[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:21:13: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m  val rs2 = Bits(5.W)[0m
+[0m[[0m[31merror[0m] [0m[0m            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:21:20: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val rs2 = Bits(5.W)[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:22:13: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m  val rs1 = Bits(5.W)[0m
+[0m[[0m[31merror[0m] [0m[0m            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:22:20: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val rs1 = Bits(5.W)[0m
+[0m[[0m[31merror[0m] [0m[0m                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:23:12: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m  val xd = Bool()[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:24:13: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m  val xs1 = Bool()[0m
+[0m[[0m[31merror[0m] [0m[0m            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:25:13: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m  val xs2 = Bool()[0m
+[0m[[0m[31merror[0m] [0m[0m            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:26:12: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m  val rd = Bits(5.W)[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:26:19: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val rd = Bits(5.W)[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:27:16: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m  val opcode = Bits(7.W)[0m
+[0m[[0m[31merror[0m] [0m[0m               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:27:23: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val opcode = Bits(7.W)[0m
+[0m[[0m[31merror[0m] [0m[0m                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:30:35: not found: type Bundle[0m
+[0m[[0m[31merror[0m] [0m[0mclass RoCCCommandCustom() extends Bundle() {[0m
+[0m[[0m[31merror[0m] [0m[0m                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:32:13: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m  val rs1 = Bits(32.W)[0m
+[0m[[0m[31merror[0m] [0m[0m            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:32:21: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val rs1 = Bits(32.W)[0m
+[0m[[0m[31merror[0m] [0m[0m                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:33:13: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m  val rs2 = Bits(32.W)[0m
+[0m[[0m[31merror[0m] [0m[0m            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:33:21: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val rs2 = Bits(32.W)[0m
+[0m[[0m[31merror[0m] [0m[0m                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:36:36: not found: type Bundle[0m
+[0m[[0m[31merror[0m] [0m[0mclass RoCCResponseCustom() extends Bundle() {[0m
+[0m[[0m[31merror[0m] [0m[0m                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:37:12: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m  val rd = Bits(5.W)[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:37:19: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val rd = Bits(5.W)[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:38:14: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m  val data = Bits(32.W)[0m
+[0m[[0m[31merror[0m] [0m[0m             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:38:22: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  val data = Bits(32.W)[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:41:34: not found: type Bundle[0m
+[0m[[0m[31merror[0m] [0m[0mclass RoCCCoreIOCustom() extends Bundle() {[0m
+[0m[[0m[31merror[0m] [0m[0m                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:42:13: not found: value Flipped[0m
+[0m[[0m[31merror[0m] [0m[0m  val cmd = Flipped(Decoupled(new RoCCCommandCustom)) // inputs : bits, valid (out : ready)[0m
+[0m[[0m[31merror[0m] [0m[0m            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:42:21: not found: value Decoupled[0m
+[0m[[0m[31merror[0m] [0m[0m  val cmd = Flipped(Decoupled(new RoCCCommandCustom)) // inputs : bits, valid (out : ready)[0m
+[0m[[0m[31merror[0m] [0m[0m                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:43:14: not found: value Decoupled[0m
+[0m[[0m[31merror[0m] [0m[0m  val resp = Decoupled(new RoCCResponseCustom) // inputs : ready (out : bits, valid)[0m
+[0m[[0m[31merror[0m] [0m[0m             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:46:41: illegal inheritance from final class Module[0m
+[0m[[0m[31merror[0m] [0m[0mclass LazyRoCCModuleImpCustom() extends Module{[0m
+[0m[[0m[31merror[0m] [0m[0m                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:47:12: not found: value IO[0m
+[0m[[0m[31merror[0m] [0m[0m  val io = IO(new RoCCCoreIOCustom())[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:50:79: not found: type LazyRoCC[0m
+[0m[[0m[31merror[0m] [0m[0m  class TorusAccelerator(opcodes: OpcodeSet) (implicit p: Parameters) extends LazyRoCC(opcodes) {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:50:35: not found: type OpcodeSet[0m
+[0m[[0m[31merror[0m] [0m[0m  class TorusAccelerator(opcodes: OpcodeSet) (implicit p: Parameters) extends LazyRoCC(opcodes) {[0m
+[0m[[0m[31merror[0m] [0m[0m                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:50:59: not found: type Parameters[0m
+[0m[[0m[31merror[0m] [0m[0m  class TorusAccelerator(opcodes: OpcodeSet) (implicit p: Parameters) extends LazyRoCC(opcodes) {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:50:88: no arguments allowed for nullary constructor Object: ()Object[0m
+[0m[[0m[31merror[0m] [0m[0m  class TorusAccelerator(opcodes: OpcodeSet) (implicit p: Parameters) extends LazyRoCC(opcodes) {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:54:63: not found: type LazyRoCCModuleImp[0m
+[0m[[0m[31merror[0m] [0m[0mclass TorusAcceleratorModule(outer: TorusAccelerator) extends LazyRoCCModuleImp(outer) {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:54:81: no arguments allowed for nullary constructor Object: ()Object[0m
+[0m[[0m[31merror[0m] [0m[0mclass TorusAcceleratorModule(outer: TorusAccelerator) extends LazyRoCCModuleImp(outer) {[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:55:13: not found: value Queue[0m
+[0m[[0m[31merror[0m] [0m[0m  val cmd = Queue(io.cmd)[0m
+[0m[[0m[31merror[0m] [0m[0m            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:55:22: object cmd is not a member of package io[0m
+[0m[[0m[31merror[0m] [0m[0m  val cmd = Queue(io.cmd)[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:56:22: class java.lang.Module is not a value[0m
+[0m[[0m[31merror[0m] [0m[0m  val myModuleImpl = Module(new TorusAcceleratorModuleImpl())[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:75:6: object resp is not a member of package io[0m
+[0m[[0m[31merror[0m] [0m[0m  io.resp.valid := myModuleImpl.io.resp.valid [0m
+[0m[[0m[31merror[0m] [0m[0m     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:76:6: object resp is not a member of package io[0m
+[0m[[0m[31merror[0m] [0m[0m  io.resp.bits.rd := myModuleImpl.io.resp.bits.rd[0m
+[0m[[0m[31merror[0m] [0m[0m     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:77:6: object resp is not a member of package io[0m
+[0m[[0m[31merror[0m] [0m[0m  io.resp.bits.data := myModuleImpl.io.resp.bits.data[0m
+[0m[[0m[31merror[0m] [0m[0m     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:95:31: illegal inheritance from final class Module[0m
+[0m[[0m[31merror[0m] [0m[0mclass CustomInterface extends Module{[0m
+[0m[[0m[31merror[0m] [0m[0m                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:96:12: not found: value IO[0m
+[0m[[0m[31merror[0m] [0m[0m  val io = IO(new Bundle{[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:96:19: not found: type Bundle[0m
+[0m[[0m[31merror[0m] [0m[0m  val io = IO(new Bundle{[0m
+[0m[[0m[31merror[0m] [0m[0m                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:97:21: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_ready = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:97:28: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_ready = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:98:21: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_valid = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:98:27: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_valid = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:99:24: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_rs1 = Input(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:99:30: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_rs1 = Input(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:99:38: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_rs1 = Input(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:100:24: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_rs2 = Input(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:100:30: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_rs2 = Input(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:100:38: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_rs2 = Input(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:101:31: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_funct = Input(Bits(7.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:101:37: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_funct = Input(Bits(7.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:101:44: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_funct = Input(Bits(7.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:102:29: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_rs1 = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:102:35: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_rs1 = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:102:42: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_rs1 = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:103:29: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_rs2 = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:103:35: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_rs2 = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:103:42: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_rs2 = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:104:28: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_xd = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:104:34: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_xd = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:105:29: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_xs1 = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:105:35: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_xs1 = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:106:29: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_xs2 = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:106:35: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_xs2 = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:107:32: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_opcode = Input(Bits(7.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:107:38: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_opcode = Input(Bits(7.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:107:45: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_opcode = Input(Bits(7.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:108:28: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_rd = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:108:34: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_rd = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:108:41: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m    val cmd_bits_inst_rd = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:109:22: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m    val resp_ready = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:109:28: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m    val resp_ready = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:110:22: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m    val resp_valid = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:110:29: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m    val resp_valid = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:111:26: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m    val resp_bits_data = Output(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:111:33: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m    val resp_bits_data = Output(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:111:41: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m    val resp_bits_data = Output(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:112:24: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m    val resp_bits_rd = Output(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:112:31: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m    val resp_bits_rd = Output(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/main/scala/torus/myFile.scala:112:38: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m    val resp_bits_rd = Output(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m145 errors found[0m

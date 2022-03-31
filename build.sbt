@@ -2,9 +2,11 @@ organization := "edu.berkeley.cs"
 
 version := "1.0"
 
-name := "HPPS_Project"
+name := "torus"
 
 scalaVersion := "2.12.4"
+
+scalacOptions ++= Seq("-deprecation","-unchecked","-Xsource:2.11")
 
 
 libraryDependencies ++=Seq(

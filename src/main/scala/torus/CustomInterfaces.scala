@@ -1,5 +1,5 @@
-
 package torus
+
 
 import chisel3._
 import chisel3.util._
@@ -39,11 +39,16 @@ class RoCCResponseCustom() extends Bundle() {
 class RoCCCoreIOCustom() extends Bundle() {
   val cmd = Flipped(Decoupled(new RoCCCommandCustom)) // inputs : bits, valid (out : ready)
   val resp = Decoupled(new RoCCResponseCustom) // inputs : ready (out : bits, valid)
+  val interrupt = Output(Bool()) // always false
+  val busy = Output(Bool()) // true when working
+
 }
 
 class LazyRoCCModuleImpCustom() extends Module{
   val io = IO(new RoCCCoreIOCustom())
 }
+
+///////////////////////connected design/////////////////////////////
 
   class TorusAccelerator(opcodes: OpcodeSet) (implicit p: Parameters) extends LazyRoCC(opcodes) {
   override lazy val module = new TorusAcceleratorModule(this)
@@ -73,20 +78,7 @@ class TorusAcceleratorModule(outer: TorusAccelerator) extends LazyRoCCModuleImp(
   io.resp.valid := myModuleImpl.io.resp.valid 
   io.resp.bits.rd := myModuleImpl.io.resp.bits.rd
   io.resp.bits.data := myModuleImpl.io.resp.bits.data
+  io.interrupt := myModuleImpl.io.interrupt
+  io.busy := myModuleImpl.io.busy
   
 }
-
-class TorusAcceleratorModuleImpl() extends LazyRoCCModuleImpCustom{
-
-  // execute the sum of the 2 arguments
-  val sum = io.cmd.bits.rs1 + io.cmd.bits.rs2
-  io.cmd.ready := true.B
-  io.resp.valid := true.B 
-  io.resp.bits.rd := 0.U
-  io.resp.bits.data := sum
-
-}
-
-
-/////////////////////////////////test file content //////////////////
-

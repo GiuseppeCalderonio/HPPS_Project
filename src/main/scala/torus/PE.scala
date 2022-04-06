@@ -57,9 +57,9 @@ class PE extends Module{
     }.elsewhen(state === exec){
         io.done := true.B
         when(io.done){
-            state := exec
-        }.otherwise{
             state := idle
+        }.otherwise{
+            state := exec
         }
     }
 

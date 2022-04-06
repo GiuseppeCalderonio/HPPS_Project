@@ -51,11 +51,29 @@ class Matrix(n: Int) extends LazyRoCCModuleImpCustom{
 
 
 }
+/*
+this module does the sum when funct === 0 rd := rs1 + rs2
+this module does the load when funct === 1 rd := mem(rs1)
+this module does the store when funct === 2 mem(rs2) := rs1
 
+*/
 class TorusAcceleratorModuleImpl() extends LazyRoCCModuleImpCustom{
+
+  val controller = Module(new Controller)
+  val pe = Module(new PE)
+
+  controller.rocc <> io
+
+  pe.io.cmd <> controller.cmd 
+  pe.io.resp <> controller.resp
+
+  controller.done := pe.io.done
+
+  // rest basically useless
 
   // io is the interface extended
 
+  /*
   val opcode = io.cmd.bits.inst.opcode
   val rd_address = io.cmd.bits.inst.rd
   val xs1 = io.cmd.bits.inst.xs1
@@ -69,12 +87,21 @@ class TorusAcceleratorModuleImpl() extends LazyRoCCModuleImpCustom{
   val rs1_content = io.cmd.bits.rs1 
   val rs2_content = io.cmd.bits.rs2
 
+  // some helper values
+
+  val isAdd = funct === 0.U 
+  val isLoad = funct === 1.U 
+  val isStore = funct === 2.U 
+
+  // memory of registers
+
+  val reg_memory = Mem(32, UInt(32.W))
+
+  // buffers in which saving the values
   val rd_buffer = Reg(Bits(5.W))
   val sum = Reg(Bits(32.W))
 
   val rd_stay = Wire(Bool())
-
-  
 
   val state = Reg(Bits(2.W))
 
@@ -115,17 +142,26 @@ class TorusAcceleratorModuleImpl() extends LazyRoCCModuleImpCustom{
   
   }
 
-  
+  // ideal datapath
 
   rd_buffer := Mux(rd_stay, rd_buffer, rd_address)
   sum := Mux(state === idle, rs1_content + rs2_content, sum)
-  io.resp.bits.data := sum
+
+  when(isLoad){
+    io.resp.bits.data := reg_memory(rs1_content)
+  }.elsewhen(isAdd){
+    io.resp.bits.data := sum
+  }
+
+  io.resp.bits.data := 0.U 
+
+  reg_memory(rs2_content) := Mux(isStore, rs1_content, reg_memory(rs1_content))
   io.resp.bits.rd := rd_buffer
 
   io.interrupt := false.B
 
   
-  
+  */
   
 
 

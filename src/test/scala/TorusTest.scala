@@ -61,11 +61,7 @@ class CustomInterface () extends Module{
   
 }
 
-
-
-
-
-class MyFirstModuleTests(m: CustomInterface) extends PeekPokeTester(m){
+class DoAddTest(m: CustomInterface) extends PeekPokeTester(m){
 
 
   // idle state
@@ -87,6 +83,7 @@ class MyFirstModuleTests(m: CustomInterface) extends PeekPokeTester(m){
   poke(m.io.cmd_bits_rs2, 3.U)
   poke(m.io.cmd_bits_inst_rd, 6.U)
   poke(m.io.cmd_valid, true.B)
+  poke(m.io.cmd_bits_inst_funct, 0.U)
 
   step(1)
 
@@ -102,7 +99,7 @@ class MyFirstModuleTests(m: CustomInterface) extends PeekPokeTester(m){
   poke(m.io.cmd_valid, true.B)
 
   step(1)
-
+  // give results state
   expect(m.io.cmd_ready, false.B)
   expect(m.io.resp_valid, true.B)
   expect(m.io.interrupt, false.B)
@@ -112,18 +109,73 @@ class MyFirstModuleTests(m: CustomInterface) extends PeekPokeTester(m){
 
 }
 
-class TorusUnitTest extends ChiselFlatSpec {
+class DoStoreTest(m: CustomInterface) extends PeekPokeTester(m){
 
-  val testerArgs = Array( ""
-    //"--backend-name", "treadle",
-    // "--generate-vcd-output", "on",
-    //"--target-dir", "test_run_dir/dmacommandtracker"
-  )
+  // idle state
+  poke(m.io.cmd_bits_rs1, 1.U)
+  poke(m.io.cmd_bits_rs2, 3.U)
+  poke(m.io.cmd_bits_inst_rd, 1.U)
+  poke(m.io.cmd_valid, false.B) 
+  poke(m.io.cmd_bits_inst_funct, 2.U)
+  
+  step(1)
 
-  behavior of "Torus"
-  it should "work" in {
+  // still idle state
+  expect(m.io.cmd_ready, true.B)
+  expect(m.io.resp_valid, false.B)
+  expect(m.io.interrupt, false.B)
+  expect(m.io.busy, false.B) 
+
+
+  poke(m.io.cmd_bits_rs1, 20.U)
+  poke(m.io.cmd_bits_rs2, 1.U)
+  poke(m.io.cmd_bits_inst_rd, 6.U)
+  poke(m.io.cmd_valid, true.B)
+  poke(m.io.cmd_bits_inst_funct, 0.U)
+
+  step(1)
+
+  // exec state
+  expect(m.io.cmd_ready, false.B)
+  expect(m.io.resp_valid, false.B)
+  expect(m.io.interrupt, false.B)
+  expect(m.io.busy, true.B) 
+
+  poke(m.io.cmd_bits_rs1, 4.U)
+  poke(m.io.cmd_bits_rs2, 8.U)
+  poke(m.io.cmd_bits_inst_rd, 1.U)
+  poke(m.io.cmd_valid, true.B)
+  poke(m.io.cmd_bits_inst_funct, 0.U)
+
+  step(1)
+  // give_results state
+  expect(m.io.cmd_ready, false.B)
+  expect(m.io.resp_valid, true.B)
+  expect(m.io.interrupt, false.B)
+  expect(m.io.busy, true.B)
+  //expect(m.io.resp_bits_data, 4.U)
+  //expect(m.io.resp_bits_rd, 6.U)
+
+}
+
+
+class TorusTest extends ChiselFlatSpec {
+
+  val testerArgs = Array("")
+
+  behavior of "DoAddTests"
+  it should "add" in {
     chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterface()) {
-      c => new MyFirstModuleTests(c)
+      c => new DoAddTest(c)
+    } should be (true)
+  }
+  
+  behavior of "DoLoadTests"
+  it should "load" in {
+    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterface()) {
+      c => new DoStoreTest(c)
     } should be (true)
   }
 }
+
+

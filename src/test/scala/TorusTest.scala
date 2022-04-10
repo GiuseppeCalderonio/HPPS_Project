@@ -7,7 +7,7 @@ import chisel3.util._
 import org.scalatest._
 
 
-class CustomInterface () extends Module{
+class CustomInterfaceTorusTest () extends Module{
   val io = IO(new Bundle{
     val cmd_ready = Output(Bool())
     val cmd_valid = Input(Bool())
@@ -61,7 +61,7 @@ class CustomInterface () extends Module{
   
 }
 
-class DoAddTest(m: CustomInterface) extends PeekPokeTester(m){
+class DoAddTest(m: CustomInterfaceTorusTest) extends PeekPokeTester(m){
 
 
   // idle state
@@ -109,7 +109,7 @@ class DoAddTest(m: CustomInterface) extends PeekPokeTester(m){
 
 }
 
-class DoStoreTest(m: CustomInterface) extends PeekPokeTester(m){
+class DoStoreTest(m: CustomInterfaceTorusTest) extends PeekPokeTester(m){
 
   // idle state
   poke(m.io.cmd_bits_rs1, 1.U)
@@ -165,14 +165,14 @@ class TorusTest extends ChiselFlatSpec {
 
   behavior of "DoAddTests"
   it should "add" in {
-    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterface()) {
+    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceTorusTest()) {
       c => new DoAddTest(c)
     } should be (true)
   }
   
   behavior of "DoLoadTests"
   it should "load" in {
-    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterface()) {
+    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceTorusTest()) {
       c => new DoStoreTest(c)
     } should be (true)
   }

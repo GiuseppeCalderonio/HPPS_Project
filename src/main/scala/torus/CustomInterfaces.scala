@@ -14,6 +14,22 @@ import freechips.rocketchip.rocket._
 import freechips.rocketchip.tilelink._
 import freechips.rocketchip.util.InOrderArbiter
 
+
+
+class Command extends Bundle{
+    val funct = Bits(7.W)
+    val rd = Bits(5.W)
+    val opcode = Bits(7.W) 
+    val rs1 = Bits(32.W)
+    val rs2 = Bits(32.W)
+}
+
+class Response extends Bundle{
+    val data = Bits(32.W)
+}
+
+// used by the main classes
+
 class RoCCInstructionCustom extends Bundle {
   val funct = Bits(7.W)
   val rs2 = Bits(5.W)

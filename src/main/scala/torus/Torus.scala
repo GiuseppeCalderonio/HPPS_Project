@@ -62,12 +62,16 @@ class TorusAcceleratorModuleImpl() extends LazyRoCCModuleImpCustom{
   val controller = Module(new Controller)
   val pe = Module(new PE)
 
-  controller.rocc <> io
+  controller.io.rocc <> io
 
-  pe.io.cmd <> controller.cmd 
-  pe.io.resp <> controller.resp
+  pe.io.cmd <> controller.io.cmd 
+  pe.io.resp <> controller.io.resp
 
-  controller.done := pe.io.done
+  pe.io.ready := controller.io.ready
+
+  // ideally here : done := PE1.done && PE2.done && .... 
+
+  controller.io.done := pe.io.done
 
   // rest basically useless
 

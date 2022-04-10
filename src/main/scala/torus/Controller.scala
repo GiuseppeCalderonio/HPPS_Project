@@ -14,23 +14,28 @@ import freechips.rocketchip.tilelink._
 import freechips.rocketchip.util.InOrderArbiter
 
 
-class Command extends Bundle{
-    val funct = Bits(7.W)
-    val rd = Bits(5.W)
-    val opcode = Bits(7.W) 
-    val rs1 = Bits(32.W)
-    val rs2 = Bits(32.W)
-}
 
-class Response extends Bundle{
-    val data = Bits(32.W)
-}
 
+/*
+this module represents the controller, it forwards and broadcasts the main 
+signals coming from the rocCC core, and eventually filters them
+then it waits until every PE is done thrugh the "done" signal and returns the values
+
+it has the bundle interface:
+    rocc : interface through which receives the signals from the prcessor
+    cmd : custom command containing only the useful info used by the PEs coming from the core
+    resp : cosutom response containing only the useful info computed by the PEs
+    done : signal used by the PEs to communicate the fact that they are done with the computation
+            , when all the PEs are done, this signal is 1
+    ready : signal used to communicate with the PEs, in particular, it is 1 during the 
+            whole computation, and when it is 1 it gives the input to all the PEs to
+            start their computaion
+*/
 class Controller extends Module{
     val io = IO(new Bundle{
         val rocc = new RoCCCoreIOCustom
-        val cmd = new Command // inputs : bits, valid (out : ready)
-        val resp = new Response // inputs : ready (out : bits, valid)
+        val cmd = new Command 
+        val resp = new Response 
         val done = Input(Bool())
         val ready = Output(Bool())
         

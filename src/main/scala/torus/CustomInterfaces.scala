@@ -18,7 +18,6 @@ import freechips.rocketchip.util.InOrderArbiter
 
 class Command extends Bundle{
     val funct = Bits(7.W)
-    val rd = Bits(5.W)
     val opcode = Bits(7.W) 
     val rs1 = Bits(32.W)
     val rs2 = Bits(32.W)

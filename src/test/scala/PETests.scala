@@ -20,11 +20,11 @@ class CustomInterfacePETests extends Module{
         val ready = Input(Bool())
     })
 
-    val PE = Module(new PE())
+    val PE = Module(new PE(1))
 
     // conecting inputs to module
     PE.io.cmd.funct := io.cmd_funct
-    PE.io.cmd.rd := io.cmd_rd
+    //PE.io.cmd.rd := io.cmd_rd
     PE.io.cmd.opcode := io.cmd_opcode
     PE.io.cmd.rs1 := io.cmd_rs1
     PE.io.cmd.rs2 := io.cmd_rs2
@@ -171,7 +171,7 @@ class PETests extends ChiselFlatSpec {
   }
 
   behavior of "DoLoadStoreTest"
-  it should "execute loads and stores corrently" in {
+  it should "execute loads and stores correctly" in {
     chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfacePETests()) {
       c => new DoLoadStoreTest(c)
     } should be (true)

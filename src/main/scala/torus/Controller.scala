@@ -12,6 +12,7 @@ import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.rocket._
 import freechips.rocketchip.tilelink._
 import freechips.rocketchip.util.InOrderArbiter
+import java.io.ObjectInputFilter
 
 
 
@@ -25,112 +26,114 @@ it has the bundle interface:
     rocc : interface through which receives the signals from the prcessor
     cmd : custom command containing only the useful info used by the PEs coming from the core
     resp : cosutom response containing only the useful info computed by the PEs
-    done : signal used by the PEs to communicate the fact that they are done with the computation
-            , when all the PEs are done, this signal is 1
-    ready : signal used to communicate with the PEs, in particular, it is 1 during the 
-            whole computation, and when it is 1 it gives the input to all the PEs to
-            start their computaion
 */
-class Controller extends Module{
+
+class Controller(queue_size : Int = 5) extends Module{
     val io = IO(new Bundle{
         val rocc = new RoCCCoreIOCustom
-        val cmd = Output(new Command) // here cmd is an output because it filters the rocc signals and forewards them to PE
-        val resp = Input(new Response) // here resp is an input because it gets the relevant data from PE
-        val done = Input(Bool())
-        val ready = Output(Bool())
-        
+        val cmd = Decoupled(new Command) // here cmd is an output because it filters the rocc signals and forewards them to PE
+        val resp = Flipped(Decoupled(new Response)) // here resp is an input because it gets the relevant data from PE
+        // cmd: inputs: ready, outputs: bits, valid
+        // resp: inputs: bits, valid, outputs: ready
     })
 
-    // renaiming to not get crazy
+    // convention:
+      // do_load: funct === 0.U
+      // get_load: funct === 2.U
+    
 
+    // renaiming to not get crazy
     val rocc = io.rocc
     val cmd = io.cmd
     val resp = io.resp
-    val done = io.done
-    val ready = io.ready
     val in_valid = io.rocc.cmd.valid 
 
-    // state machine declaration
-    val idle :: exec :: give_result :: wait_result :: Nil = Enum(4)
-    val state = Reg(Bits(2.W))
+    val in_filter = Module(new InputFilter())
+    val out_filter = Module(new OutputFilter())
 
-    // output data buffer, needed because we have to locally store the result
-    // until the core is ready to receive it
-    val reg_resp_data = Reg(Bits(32.W))
+    val f_in_cmd = Wire(Decoupled(new Command))
+    val f_out_resp = Wire(Flipped(Decoupled(new Response)))
 
+    in_filter.io.rocc_cmd <> rocc.cmd
+    in_filter.io.cmd <> f_in_cmd
 
-    // connecting inputs
-    cmd.funct := rocc.cmd.bits.inst.funct
-    cmd.opcode := rocc.cmd.bits.inst.opcode
-    cmd.rs1 := rocc.cmd.bits.rs1
-    cmd.rs2 := rocc.cmd.bits.rs2
+    val q_in_cmd = Wire(Flipped(Decoupled(new Command)))
+    val q_out_resp = Wire(Decoupled(new Response))
 
-    // connecting outputs
-    rocc.cmd.ready := state === idle // the controller is ready when it is in idle state
-    reg_resp_data := Mux(state === wait_result, reg_resp_data, resp.data)
-    rocc.resp.bits.data := reg_resp_data
-    rocc.resp.valid := state === give_result || state === wait_result // the controller has relevant data to return when the state is give_result
+    val in_q = Queue(q_in_cmd, queue_size)
+    val out_q = Queue(resp, queue_size)
 
-    // handling the return register
-    val rd_address = Reg(Bits(5.W))
+    out_q <> q_out_resp
 
-    // if state is idle, it means there is no op waiting to do anything, otherwise 
-    //this value has to be stored till the next one will be required to be stored(next idle state)
-    rd_address := Mux( state === idle, rocc.cmd.bits.inst.rd, rd_address)
+    val get_load = in_filter.io.cmd.bits.funct === 2.U
 
-    rocc.resp.bits.rd := rd_address
+    // connecting left components
+    q_in_cmd.bits.rs1 := f_in_cmd.bits.rs1
+    q_in_cmd.bits.rs2 := f_in_cmd.bits.rs2
+    q_in_cmd.bits.funct := f_in_cmd.bits.funct
+    q_in_cmd.valid := !(get_load) && f_in_cmd.valid
 
-    // pseudo-default values
-    rocc.interrupt := false.B 
+    in_filter.io.cmd.ready := Mux(get_load && f_in_cmd.valid, f_out_resp.ready, q_in_cmd.ready)
 
-    // state machine logic
-
-    state := idle
-
-    when(state === idle){
-    rocc.busy := false.B 
-    rocc.cmd.ready := true.B
-    ready := false.B 
-    when(in_valid){
-      state := exec
-    }.otherwise{
-      state := idle
-    }
-  }.elsewhen(state === exec){
-    rocc.busy := true.B
-    ready := true.B
-    when(done && rocc.resp.ready){
-        state := give_result
-    }.elsewhen(done && !rocc.resp.ready){
-      state := wait_result
-    }.otherwise{
-        state := exec
-    }
-    
-  }.elsewhen(state === wait_result){
-
-    rocc.busy := true.B 
-    ready := false.B 
-    when(rocc.resp.ready){
-      state := give_result
-    }.otherwise{
-      state := wait_result
-    }
-    
-  
-  }.elsewhen(state === give_result){
-    rocc.busy := true.B
-    ready := false.B 
-    state := idle
-
-  }.otherwise{ // shouldn't happen
-  
-  ready := false.B 
-  rocc.busy := false.B
-  state := idle
-  
-  }
+    out_q.ready := f_out_resp.ready && get_load && f_in_cmd.valid
 
     
+
+
+    out_filter.io.rocc_resp <> rocc.resp
+    out_filter.io.resp <> f_out_resp
+    out_filter.io.rd := /*RegNext(*/ rocc.cmd.bits.inst.rd /*)*/ ????
+
+    f_out_resp.valid := q_out_resp.valid
+    f_out_resp.bits.data := Mux( get_load && f_in_cmd.valid, q_out_resp.bits.data, 0.U )
+
+    io.rocc.interrupt := false.B 
+    io.rocc.busy := false.B ????
+
+}
+
+
+class InputFilter() extends Module{
+
+  val io = IO(new Bundle{
+
+    val rocc_cmd = Flipped(Decoupled(new RoCCCommandCustom)) // inputs : bits, valid (out : ready)
+    val cmd = Decoupled(new Command) // inputs : ready (out : bits, valid)
+  })
+
+  val cmd = io.cmd
+  val rocc_cmd = io.rocc_cmd
+
+  // connecting inputs
+  cmd.bits.rs1 := rocc_cmd.bits.rs1
+  cmd.bits.rs2 := rocc_cmd.bits.rs2
+  cmd.bits.funct := rocc_cmd.bits.inst.funct
+  cmd.valid := rocc_cmd.valid
+
+  // connecting outputs
+  rocc_cmd.ready := cmd.ready
+
+}
+
+class OutputFilter() extends Module{
+
+  val io = IO(new Bundle{
+
+    val rocc_resp = Decoupled(new RoCCResponseCustom) // inputs : ready (out : bits, valid) 
+    val resp = Flipped(Decoupled(new Response)) // resp: inputs: bits, valid, (out: ready)
+    val rd = Input(Bits(32.W))
+
+  })
+
+  val rocc_resp = io.rocc_resp
+  val resp = io.resp 
+
+  // connecting inputs
+  rocc_resp.bits.rd := io.rd
+  rocc_resp.bits.data := resp.bits.data
+  rocc_resp.valid := resp.valid
+  // connecting outputs
+  resp.ready := rocc_resp.ready
+
 
 }

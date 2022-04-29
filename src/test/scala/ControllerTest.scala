@@ -6,13 +6,13 @@ import chisel3.iotesters._
 import chisel3.util._ 
 import org.scalatest._
 
-
+/*
 class CustomInterfaceControllerTest extends Module{
 
     val io = IO(new Bundle{
 
         val cmd_funct = Output(Bits(7.W))
-        val cmd_opcode = Output(Bits(7.W))
+        //val cmd_opcode = Output(Bits(7.W))
         val cmd_rs1 = Output(Bits(32.W))
         val cmd_rs2 = Output(Bits(32.W))
         val resp_data = Input(Bits(32.W))
@@ -69,7 +69,7 @@ class CustomInterfaceControllerTest extends Module{
     io.cmd_funct := contr.cmd.funct
     io.cmd_rs1 := contr.cmd.rs1
     io.cmd_rs2 := contr.cmd.rs2
-    io.cmd_opcode := contr.cmd.opcode
+    //io.cmd_opcode := contr.cmd.opcode
     io.ready := contr.ready
     io.rocc_cmd_ready := contr.rocc.cmd.ready
     io.rocc_resp_valid := contr.rocc.resp.valid
@@ -86,6 +86,7 @@ class StateMachineTestAndRd(m : CustomInterfaceControllerTest) extends PeekPokeT
 
     poke(m.io.rocc_cmd_valid, false.B)
     poke(m.io.rocc_cmd_bits_inst_rd, 13.U)
+    poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
 
     step(1) // idle -> idle
 
@@ -98,6 +99,7 @@ class StateMachineTestAndRd(m : CustomInterfaceControllerTest) extends PeekPokeT
 
     poke(m.io.rocc_cmd_valid, true.B)
     poke(m.io.rocc_cmd_bits_inst_rd, 3.U)
+    poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
 
     step(1) // idle -> exec
 
@@ -173,6 +175,7 @@ class StateMachineTestAndRd(m : CustomInterfaceControllerTest) extends PeekPokeT
 
     poke(m.io.rocc_cmd_valid, true.B)
     poke(m.io.rocc_cmd_bits_inst_rd, 4.U)
+    poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
 
     step(1) // idle -> exec
 
@@ -208,6 +211,7 @@ class BusyTest (m : CustomInterfaceControllerTest) extends PeekPokeTester(m){
     // idle
 
     poke(m.io.rocc_cmd_valid, false.B)
+    poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
 
     step(1) // idle -> idle
 
@@ -219,6 +223,7 @@ class BusyTest (m : CustomInterfaceControllerTest) extends PeekPokeTester(m){
   // idle
 
   poke(m.io.rocc_cmd_valid, true.B)
+  poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
 
   step(1) // idle -> exec
 
@@ -291,7 +296,7 @@ class FilterInputSignalsTest(m: CustomInterfaceControllerTest) extends PeekPokeT
 
   poke(m.io.rocc_cmd_bits_inst_funct, a.U)
   poke(m.io.rocc_cmd_bits_inst_rd, a.U)
-  poke(m.io.rocc_cmd_bits_inst_opcode,a.U)
+  poke(m.io.rocc_cmd_bits_inst_opcode, a.U)
   poke(m.io.rocc_cmd_bits_rs1, a.U)
   poke(m.io.rocc_cmd_bits_rs2, a.U)
 
@@ -301,7 +306,23 @@ class FilterInputSignalsTest(m: CustomInterfaceControllerTest) extends PeekPokeT
   step(1) // idle-> idle 
 
   expect(m.io.cmd_funct, a.U)
-  expect(m.io.cmd_opcode,a.U)
+  expect(m.io.cmd_rs1, a.U)
+  expect(m.io.cmd_rs2, a.U)
+
+  // idle
+
+  poke(m.io.rocc_cmd_bits_inst_funct, a.U)
+  poke(m.io.rocc_cmd_bits_inst_rd, a.U)
+  poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
+  poke(m.io.rocc_cmd_bits_rs1, a.U)
+  poke(m.io.rocc_cmd_bits_rs2, a.U)
+
+  poke(m.io.rocc_cmd_valid, false.B)
+
+
+  step(1) // idle-> idle 
+
+  expect(m.io.cmd_funct, a.U)
   expect(m.io.cmd_rs1, a.U)
   expect(m.io.cmd_rs2, a.U)
 
@@ -311,7 +332,7 @@ class FilterInputSignalsTest(m: CustomInterfaceControllerTest) extends PeekPokeT
 
   poke(m.io.rocc_cmd_bits_inst_funct, a.U)
   poke(m.io.rocc_cmd_bits_inst_rd, a.U)
-  poke(m.io.rocc_cmd_bits_inst_opcode,a.U)
+  poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
   poke(m.io.rocc_cmd_bits_rs1, a.U)
   poke(m.io.rocc_cmd_bits_rs2, a.U)
 
@@ -321,7 +342,6 @@ class FilterInputSignalsTest(m: CustomInterfaceControllerTest) extends PeekPokeT
   step(1) // idle-> exec
 
   expect(m.io.cmd_funct, a.U)
-  expect(m.io.cmd_opcode,a.U)
   expect(m.io.cmd_rs1, a.U)
   expect(m.io.cmd_rs2, a.U)
 
@@ -341,7 +361,7 @@ class FilterInputSignalsTest(m: CustomInterfaceControllerTest) extends PeekPokeT
     step(1) // exec -> exec
 
     expect(m.io.cmd_funct, a.U)
-    expect(m.io.cmd_opcode,a.U)
+    //expect(m.io.cmd_opcode,a.U)
     expect(m.io.cmd_rs1, a.U)
     expect(m.io.cmd_rs2, a.U)
 
@@ -364,7 +384,7 @@ class FilterInputSignalsTest(m: CustomInterfaceControllerTest) extends PeekPokeT
   step(1) // exec -> wait_result
 
   expect(m.io.cmd_funct, a.U)
-  expect(m.io.cmd_opcode,a.U)
+  //expect(m.io.cmd_opcode,a.U)
   expect(m.io.cmd_rs1, a.U)
   expect(m.io.cmd_rs2, a.U)
 
@@ -388,7 +408,7 @@ class FilterInputSignalsTest(m: CustomInterfaceControllerTest) extends PeekPokeT
     step(1) // wait_result -> wait_result
 
     expect(m.io.cmd_funct, i.U)
-    expect(m.io.cmd_opcode, i.U)
+    //expect(m.io.cmd_opcode, i.U)
     expect(m.io.cmd_rs1, i.U)
     expect(m.io.cmd_rs2, i.U)
 
@@ -409,7 +429,7 @@ class FilterInputSignalsTest(m: CustomInterfaceControllerTest) extends PeekPokeT
     step(1) // wait_result -> give_result
 
     expect(m.io.cmd_funct, a.U)
-    expect(m.io.cmd_opcode, a.U)
+    //expect(m.io.cmd_opcode, a.U)
     expect(m.io.cmd_rs1, a.U)
     expect(m.io.cmd_rs2, a.U)
 
@@ -426,7 +446,7 @@ class FilterInputSignalsTest(m: CustomInterfaceControllerTest) extends PeekPokeT
     step(1) // give_result -> idle
 
     expect(m.io.cmd_funct, a.U)
-    expect(m.io.cmd_opcode, a.U)
+    //expect(m.io.cmd_opcode, a.U)
     expect(m.io.cmd_rs1, a.U)
     expect(m.io.cmd_rs2, a.U)
 
@@ -441,6 +461,7 @@ class FilterOutputSignalsTest(m : CustomInterfaceControllerTest) extends PeekPok
 
   poke(m.io.resp_data, a.U)
   poke(m.io.rocc_cmd_valid, false.B)
+  poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
 
 
   step(1) // idle-> idle 
@@ -453,6 +474,7 @@ class FilterOutputSignalsTest(m : CustomInterfaceControllerTest) extends PeekPok
   // idle
 
   poke(m.io.resp_data, a.U)
+  poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
 
   poke(m.io.rocc_cmd_valid, true.B)
 
@@ -531,6 +553,7 @@ class FilterOutputSignalsTest(m : CustomInterfaceControllerTest) extends PeekPok
 
   poke(m.io.resp_data, a.U)
   poke(m.io.rocc_cmd_valid, false.B)
+  poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
 
 
   step(1) // idle-> idle 
@@ -543,6 +566,7 @@ class FilterOutputSignalsTest(m : CustomInterfaceControllerTest) extends PeekPok
   // idle
 
   poke(m.io.resp_data, a.U)
+  poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
 
   poke(m.io.rocc_cmd_valid, true.B)
 
@@ -589,11 +613,100 @@ class FilterOutputSignalsTest(m : CustomInterfaceControllerTest) extends PeekPok
   expect(m.io.rocc_resp_valid, false.B)
 }
 
+*/
+
+class CustomInterfaceControllerTest extends Module{
+  val io = IO(new Bundle {
+      val in = Flipped(Decoupled(UInt(8.W))) // inputs : bits, valid (out : ready)
+      val out = Decoupled(UInt(8.W)) // inputs : ready (out : bits, valid)
+    })
+    val queue = Queue(io.in, 2)  // 2-element queue
+    //queue.enq(io.out.bits)
+    io.out <> queue
+}
+
+class Queue_test(mo: CustomInterfaceControllerTest) extends PeekPokeTester(mo){
+
+  poke(mo.io.in.valid, true.B )
+  poke(mo.io.in.bits, 20.U )
+  poke(mo.io.out.ready, false.B )
+
+  // q = [ NULL, NULL]
+
+  step(1)
+
+  // q = [NULL, 20] -> 20
+
+  expect(mo.io.in.ready, true.B ) // the queue is NOT full
+  expect(mo.io.out.valid, true.B ) // the queue is NOT empty
+  expect(mo.io.out.bits, 20.U )
+
+  poke(mo.io.in.valid, true.B )
+  poke(mo.io.in.bits, 40.U )
+  poke(mo.io.out.ready, false.B )
+
+  step(1)
+
+  // q = [40, 20] -> 20
+
+  expect(mo.io.in.ready, false.B ) // the queue is FULL
+  expect(mo.io.out.valid, true.B ) // the queue is NOT empty
+  expect(mo.io.out.bits, 20.U )
+
+  poke(mo.io.in.valid, true.B )
+  poke(mo.io.in.bits, 60.U )
+  poke(mo.io.out.ready, false.B )
+
+  step(1)
+
+  // q = [40, 20] -> 20
+
+  expect(mo.io.in.ready, false.B ) // the queue is FULL
+  expect(mo.io.out.valid, true.B ) // the queue is NOT empty
+  expect(mo.io.out.bits, 20.U )
+
+  poke(mo.io.in.valid, false.B )
+  poke(mo.io.in.bits, 80.U )
+  poke(mo.io.out.ready, true.B )
+
+  step(1)
+
+  // q = [NULL, 40] -> 40
+
+  expect(mo.io.in.ready, true.B ) // the queue is NOT empty
+  expect(mo.io.out.valid, true.B ) // the queue is NOT empty
+  expect(mo.io.out.bits, 40.U )
+
+  poke(mo.io.in.valid, false.B )
+  poke(mo.io.in.bits, 80.U )
+  poke(mo.io.out.ready, true.B )
+
+  step(1)
+
+  // q = [NULL, NULL] -> ??
+
+  expect(mo.io.in.ready, true.B ) // the queue is NOT full
+  expect(mo.io.out.valid, false.B ) // the queue is EMPTY
+  //expect(mo.io.out.bits, 0.U ) not valid => does not make sense to check the content
+
+  poke(mo.io.in.valid, true.B )
+  poke(mo.io.in.bits, 80.U )
+  poke(mo.io.out.ready, false.B )
+
+  step(1)
+
+  expect(mo.io.in.ready, true.B )
+  expect(mo.io.out.valid, true.B )
+  expect(mo.io.out.bits, 80.U )
+
+}
 
 
 class ControllerTest extends ChiselFlatSpec {
 
   val testerArgs = Array("")
+
+  /*
 
   behavior of "StateMachineTestAndRd"
   it should "change state correctly, and gives back rd correctly" in {
@@ -622,4 +735,14 @@ class ControllerTest extends ChiselFlatSpec {
       c => new FilterOutputSignalsTest(c)
     } should be (true)
   }  
+
+  */
+
+  behavior of "Queue"
+  it should "Boh" in {
+    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceControllerTest()) {
+      c => new Queue_test(c)
+    } should be (true)
+  }  
+
 }

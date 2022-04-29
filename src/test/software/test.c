@@ -18,6 +18,11 @@ int main(){
 
     ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 0);
 
+    // load rs1, 4
+    // load rs2, 3
+    // opcode ...
+    // store resp.rd, resp.data
+
 
     printf("End simulation, result is %d = %d + %d \n", rd, rs1, rs2);
 

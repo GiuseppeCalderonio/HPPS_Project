@@ -15,10 +15,9 @@ import freechips.rocketchip.tilelink._
 import freechips.rocketchip.util.InOrderArbiter
 
 
-
 class Command extends Bundle{
     val funct = Bits(7.W)
-    val opcode = Bits(7.W) 
+    // val opcode = Bits(7.W) , does not make so sense
     val rs1 = Bits(32.W)
     val rs2 = Bits(32.W)
 }
@@ -41,7 +40,7 @@ class RoCCInstructionCustom extends Bundle {
 }
 
 class RoCCCommandCustom() extends Bundle() {
-  val inst = new RoCCInstructionCustom
+  val inst = new RoCCInstructionCustom // 32 total bits
   val rs1 = Bits(32.W)
   val rs2 = Bits(32.W)
 }

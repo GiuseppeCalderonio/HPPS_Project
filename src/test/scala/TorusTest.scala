@@ -61,100 +61,162 @@ class CustomInterfaceTorusTest () extends Module{
   
 }
 
-class DoAddTest(m: CustomInterfaceTorusTest) extends PeekPokeTester(m){
+class LogicHandlerTest(m: CustomInterfaceTorusTest) extends PeekPokeTester(m){
 
-
-  // idle state
-  poke(m.io.cmd_bits_rs1, 1.U)
-  poke(m.io.cmd_bits_rs2, 3.U)
-  poke(m.io.cmd_bits_inst_rd, 1.U)
-  poke(m.io.cmd_valid, false.B) 
   
-  step(1)
+  var loop = 2
 
-  // still idle state
-  expect(m.io.cmd_ready, true.B)
-  expect(m.io.resp_valid, false.B)
-  expect(m.io.interrupt, false.B)
-  expect(m.io.busy, false.B) 
+  //------------first with immediate results
 
 
-  poke(m.io.cmd_bits_rs1, 1.U)
-  poke(m.io.cmd_bits_rs2, 3.U)
-  poke(m.io.cmd_bits_inst_rd, 6.U)
-  poke(m.io.cmd_valid, true.B)
-  poke(m.io.cmd_bits_inst_funct, 0.U)
+  poke(m.io.cmd_valid, false.B )
+  poke(m.io.cmd_bits_inst_opcode, 2.U )
 
-  step(1)
+  step(1) // no changes at all
 
-  // exec state
-  expect(m.io.cmd_ready, false.B)
-  expect(m.io.resp_valid, false.B)
-  expect(m.io.interrupt, false.B)
-  expect(m.io.busy, true.B) 
+  expect(m.io.interrupt, false.B )
+  expect(m.io.busy, false.B )
+  expect(m.io.cmd_ready, true.B )
+  expect(m.io.resp_valid, false.B )
 
-  poke(m.io.cmd_bits_rs1, 4.U)
-  poke(m.io.cmd_bits_rs2, 8.U)
-  poke(m.io.cmd_bits_inst_rd, 1.U)
-  poke(m.io.cmd_valid, true.B)
 
-  step(1)
-  // give results state
-  expect(m.io.cmd_ready, false.B)
-  expect(m.io.resp_valid, true.B)
-  expect(m.io.interrupt, false.B)
-  expect(m.io.busy, true.B)
-  expect(m.io.resp_bits_data, 4.U)
-  expect(m.io.resp_bits_rd, 6.U)
+  // controller: idle, PE: idle
+  poke(m.io.cmd_valid, true.B )
+  poke(m.io.cmd_bits_inst_opcode, "b0001011".U )
+
+  for(i <- 0 until loop){
+
+    poke(m.io.resp_ready, true.B )
+
+    step(1) // CK 1 & 2
+
+    expect(m.io.interrupt, false.B )
+    expect(m.io.busy, true.B )
+    expect(m.io.cmd_ready, false.B )
+    expect(m.io.resp_valid, false.B )
+
+  }
+
+  // controller: exec, PE: exec
+
+  poke(m.io.resp_ready, true.B )
+
+  step(1) // CK 3
+
+  expect(m.io.interrupt, false.B )
+  expect(m.io.busy, true.B )
+  expect(m.io.cmd_ready, false.B )
+  expect(m.io.resp_valid, true.B )
+
+  // controller: give_result, PE: idle
+
+  step(1) // CK 4
+
+  expect(m.io.interrupt, false.B )
+  expect(m.io.busy, false.B )
+  expect(m.io.cmd_ready, true.B )
+  expect(m.io.resp_valid, false.B )
+
+
+  //------------- then with a waiting condition
+
+  // controller: idle, PE: idle
+  poke(m.io.cmd_valid, true.B )
+  poke(m.io.cmd_bits_inst_opcode, "b0001011".U )
+
+  for(i <- 0 until loop){
+
+    poke(m.io.resp_ready, false.B )
+
+    step(1) // CK 1 & 2
+
+    expect(m.io.interrupt, false.B )
+    expect(m.io.busy, true.B )
+    expect(m.io.cmd_ready, false.B )
+    expect(m.io.resp_valid, false.B )
+
+  }
+
+  for(i <- 0 until loop){
+
+    poke(m.io.resp_ready, false.B )
+
+    step(1) // CK 1 & 2
+
+    expect(m.io.interrupt, false.B )
+    expect(m.io.busy, true.B )
+    expect(m.io.cmd_ready, false.B )
+    expect(m.io.resp_valid, true.B )
+
+  }
+
+  // controller: exec, PE: exec
+
+  poke(m.io.resp_ready, true.B )
+
+  step(1) // CK 3
+
+  expect(m.io.interrupt, false.B )
+  expect(m.io.busy, true.B )
+  expect(m.io.cmd_ready, false.B )
+  expect(m.io.resp_valid, true.B )
+
+  // controller: give_result, PE: idle
+
+  step(1) // CK 4
+
+  expect(m.io.interrupt, false.B )
+  expect(m.io.busy, false.B )
+  expect(m.io.cmd_ready, true.B )
+  expect(m.io.resp_valid, false.B )
+
 
 }
 
-class DoStoreTest(m: CustomInterfaceTorusTest) extends PeekPokeTester(m){
+class LoadStoreTest(m : CustomInterfaceTorusTest) extends PeekPokeTester(m){
 
-  // idle state
-  poke(m.io.cmd_bits_rs1, 1.U)
-  poke(m.io.cmd_bits_rs2, 3.U)
-  poke(m.io.cmd_bits_inst_rd, 1.U)
-  poke(m.io.cmd_valid, false.B) 
-  poke(m.io.cmd_bits_inst_funct, 2.U)
-  
-  step(1)
+  var rd = 3
+  var rs1 = 15
+  var rs2 = 26
+  var load = 0
+  var store = 1
+  var load_result = rs1
 
-  // still idle state
-  expect(m.io.cmd_ready, true.B)
-  expect(m.io.resp_valid, false.B)
-  expect(m.io.interrupt, false.B)
-  expect(m.io.busy, false.B) 
+  // do a store in all the PEs: mem(rs2) := rs1
 
+  poke(m.io.cmd_valid, true.B )
+  poke(m.io.cmd_bits_inst_funct, store.U )
+  poke(m.io.cmd_bits_inst_opcode, "b0001011".U )
+  poke(m.io.cmd_bits_rs1, rs1.U )
+  poke(m.io.cmd_bits_rs2, rs2.U )
+  poke(m.io.cmd_bits_inst_rd, rd.U )
+  poke(m.io.resp_ready, true.B )
 
-  poke(m.io.cmd_bits_rs1, 20.U)
-  poke(m.io.cmd_bits_rs2, 1.U)
-  poke(m.io.cmd_bits_inst_rd, 6.U)
-  poke(m.io.cmd_valid, true.B)
-  poke(m.io.cmd_bits_inst_funct, 0.U)
+  step(3) // it takes 3 CK to have the result ready
 
-  step(1)
-
-  // exec state
-  expect(m.io.cmd_ready, false.B)
-  expect(m.io.resp_valid, false.B)
-  expect(m.io.interrupt, false.B)
-  expect(m.io.busy, true.B) 
-
-  poke(m.io.cmd_bits_rs1, 4.U)
-  poke(m.io.cmd_bits_rs2, 8.U)
-  poke(m.io.cmd_bits_inst_rd, 1.U)
-  poke(m.io.cmd_valid, true.B)
-  poke(m.io.cmd_bits_inst_funct, 0.U)
+  expect(m.io.resp_bits_rd, rd.U )
+  expect(m.io.resp_bits_data, rs1.U )
 
   step(1)
-  // give_results state
-  expect(m.io.cmd_ready, false.B)
-  expect(m.io.resp_valid, true.B)
-  expect(m.io.interrupt, false.B)
-  expect(m.io.busy, true.B)
-  //expect(m.io.resp_bits_data, 4.U)
-  //expect(m.io.resp_bits_rd, 6.U)
+
+  rd = 10
+  rs1 = rs2
+
+
+  // do a load in all the PEs: data := mem(rs1)
+
+  poke(m.io.cmd_valid, true.B )
+  poke(m.io.cmd_bits_inst_funct, load.U )
+  poke(m.io.cmd_bits_inst_opcode, "b0001011".U )
+  poke(m.io.cmd_bits_rs1, rs1.U )
+  poke(m.io.cmd_bits_rs2, rs2.U )
+  poke(m.io.cmd_bits_inst_rd, rd.U )
+  poke(m.io.resp_ready, true.B )
+
+  step(3)
+
+  expect(m.io.resp_bits_rd, rd.U )
+  expect(m.io.resp_bits_data, load_result.U )
 
 }
 
@@ -163,19 +225,21 @@ class TorusTest extends ChiselFlatSpec {
 
   val testerArgs = Array("")
 
-  behavior of "DoAddTests"
-  it should "add" in {
+  behavior of "LogicHandlerTest"
+  it should "handle the logic signals correctly" in {
     chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceTorusTest()) {
-      c => new DoAddTest(c)
+      c => new LogicHandlerTest(c)
     } should be (true)
   }
-  
-  behavior of "DoLoadTests"
-  it should "load" in {
+
+
+  behavior of "LoadStoreTest"
+  it should "execute loads and stores correctly" in {
     chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceTorusTest()) {
-      c => new DoStoreTest(c)
+      c => new LoadStoreTest(c)
     } should be (true)
   }
+
 }
 
 

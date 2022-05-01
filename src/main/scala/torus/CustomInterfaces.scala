@@ -47,7 +47,7 @@ class RoCCCommandCustom() extends Bundle() {
 
 class RoCCResponseCustom() extends Bundle() {
   val rd = Bits(5.W)
-  val data = Bits(32.W)
+  val data = Bits(32.W) 
 }
 
 class RoCCCoreIOCustom() extends Bundle() {

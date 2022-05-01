@@ -6,18 +6,24 @@ import chisel3.iotesters._
 import chisel3.util._ 
 import org.scalatest._
 
-/*
-class CustomInterfaceControllerTest extends Module{
+
+class CustomInterfaceControllerTest(queue_size: Int) extends Module{
 
     val io = IO(new Bundle{
 
-        val cmd_funct = Output(Bits(7.W))
-        //val cmd_opcode = Output(Bits(7.W))
-        val cmd_rs1 = Output(Bits(32.W))
-        val cmd_rs2 = Output(Bits(32.W))
-        val resp_data = Input(Bits(32.W))
-        val done = Input(Bool())
-        val ready = Output(Bool())
+        // command signals
+        val cmd_bits_funct = Output(Bits(7.W))
+        val cmd_bits_rs1 = Output(Bits(32.W))
+        val cmd_bits_rs2 = Output(Bits(32.W))
+        val cmd_ready = Input(Bool())
+        val cmd_valid = Output(Bool())
+
+        // resp signals
+        val resp_bits_data = Input(Bits(32.W))
+        val resp_valid = Input(Bool())
+        val resp_ready = Output(Bool())
+
+
         // rocc signals
         val rocc_cmd_ready = Output(Bool())
         val rocc_cmd_valid = Input(Bool())
@@ -44,12 +50,14 @@ class CustomInterfaceControllerTest extends Module{
 
     })
 
-    val contr = Module(new Controller())
+    val contr = Module(new Controller(queue_size))
 
     // connecting inputs: contr = io.in
 
-    contr.resp.data := io.resp_data
-    contr.done := io.done
+    contr.resp.bits.data := io.resp_bits_data
+    contr.resp.valid := io.resp_valid
+    contr.cmd.ready := io.cmd_ready
+
     contr.rocc.cmd.valid := io.rocc_cmd_valid
     contr.rocc.cmd.bits.inst.funct := io.rocc_cmd_bits_inst_funct
     contr.rocc.cmd.bits.inst.rs2 := io.rocc_cmd_bits_inst_rs2
@@ -66,11 +74,11 @@ class CustomInterfaceControllerTest extends Module{
     // connecting outputs: io.out = contr
 
     io.rocc_busy := contr.rocc.busy
-    io.cmd_funct := contr.cmd.funct
-    io.cmd_rs1 := contr.cmd.rs1
-    io.cmd_rs2 := contr.cmd.rs2
-    //io.cmd_opcode := contr.cmd.opcode
-    io.ready := contr.ready
+    io.cmd_bits_funct := contr.cmd.bits.funct
+    io.cmd_bits_rs1 := contr.cmd.bits.rs1
+    io.cmd_bits_rs2 := contr.cmd.bits.rs2
+    io.cmd_valid := contr.cmd.valid
+    io.resp_ready := contr.resp.ready
     io.rocc_cmd_ready := contr.rocc.cmd.ready
     io.rocc_resp_valid := contr.rocc.resp.valid
     io.rocc_resp_bits_rd := contr.rocc.resp.bits.rd
@@ -80,669 +88,418 @@ class CustomInterfaceControllerTest extends Module{
 
 
 
-class StateMachineTestAndRd(m : CustomInterfaceControllerTest) extends PeekPokeTester(m){
+class InputQueueEmptyTest(m : CustomInterfaceControllerTest, n: Int) extends PeekPokeTester(m){
 
-    // idle
+  // n = 3 by default in theory
 
-    poke(m.io.rocc_cmd_valid, false.B)
-    poke(m.io.rocc_cmd_bits_inst_rd, 13.U)
-    poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
+  val i = 1
 
-    step(1) // idle -> idle
+  // input: queue empty, send useless data
+  poke(m.io.rocc_cmd_valid, false.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, i.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+  poke(m.io.cmd_ready, false.B ) 
 
-    expect(m.io.rocc_busy, false.B)
-    expect(m.io.rocc_cmd_ready, true.B)
-    expect(m.io.rocc_resp_valid, false.B)
-    expect(m.io.ready, false.B)
+  // qi = [NULL, NULL, NULL]
+  
+  step(1) // 0 -> 1
 
-    // idle
+  // qi = [NULL, NULL, NULL]
 
-    poke(m.io.rocc_cmd_valid, true.B)
-    poke(m.io.rocc_cmd_bits_inst_rd, 3.U)
-    poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
+  // check if queue is still empty
 
-    step(1) // idle -> exec
+  expect(m.io.cmd_valid, false.B ) // input queue empty
+  expect(m.io.rocc_cmd_ready, true.B ) // input queue not full
 
-    expect(m.io.rocc_busy, true.B)
-    expect(m.io.rocc_cmd_ready, false.B)
-    expect(m.io.rocc_resp_valid, false.B)
-    expect(m.io.ready, true.B)
+  // input: queue empty, send useless data (again)
+  poke(m.io.rocc_cmd_valid, false.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, i.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+  poke(m.io.cmd_ready, true.B )
 
-    for(i <- 0 to 3){
-        // exec
-        poke(m.io.done, false.B)
-        poke(m.io.rocc_cmd_bits_inst_rd, 8.U)
+  // qi = [NULL, NULL, NULL]
+  
+  step(1) // 1 -> 2
 
-        step(1) // exec -> exec
+  // qi = [NULL, NULL, NULL]
 
-        expect(m.io.rocc_busy, true.B)
-        expect(m.io.rocc_cmd_ready, false.B)
-        expect(m.io.rocc_resp_valid, false.B)
-        expect(m.io.ready, true.B)
-    }
+  // check if queue is still empty (again)
 
-    //exec
-    poke(m.io.done, true.B)
-    poke(m.io.rocc_resp_ready, false.B)
-    poke(m.io.rocc_cmd_bits_inst_rd, 12.U)
+  expect(m.io.cmd_valid, false.B ) // input queue empty
+  expect(m.io.rocc_cmd_ready, true.B ) // input queue not full
 
-    step(1) // exec -> wait_result
+  // input: queue empty, send useful data
 
-    expect(m.io.rocc_resp_bits_rd, 3.U)
-    expect(m.io.rocc_busy, true.B)
-    expect(m.io.rocc_cmd_ready, false.B)
-    expect(m.io.rocc_resp_valid, true.B)
-    expect(m.io.ready, false.B)
+  poke(m.io.rocc_cmd_valid, true.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, i.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+  poke(m.io.cmd_ready, false.B )
 
+  // qi = [NULL, NULL, NULL]
 
-    for(i <- 0 to 3){
-        // wait_result
-        poke(m.io.rocc_resp_ready, false.B)
-        poke(m.io.rocc_cmd_bits_inst_rd, 8.U)
+  step(1) // 2-> 3
 
-        step(1) // wait_result -> wait_result
+  // qi = [NULL, NULL, 1]
 
-        expect(m.io.rocc_resp_bits_rd, 3.U)
+  // check if the queue has now meaninful data
 
-        expect(m.io.rocc_busy, true.B)
-        expect(m.io.rocc_cmd_ready, false.B)
-        expect(m.io.rocc_resp_valid, true.B)
-        expect(m.io.ready, false.B)
-    }
+  expect(m.io.cmd_valid, true.B ) // input queue not empty
+  expect(m.io.cmd_bits_rs1, i.U )
+  expect(m.io.cmd_bits_rs2, i.U )
+  expect(m.io.cmd_bits_funct, i.U )
+  expect(m.io.rocc_cmd_ready, true.B ) // input queue not full
 
-    // wait_result
-    poke(m.io.rocc_resp_ready, true.B)
+  // now empty the queue
+  // input : queue with 1 value of 3, send useless data
 
-    step(1) // wait_result -> give_result
+  poke(m.io.rocc_cmd_valid, false.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, i.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+  poke(m.io.cmd_ready, true.B )
 
-    expect(m.io.rocc_resp_bits_rd, 3.U)
+  // qi = [NULL, NULL, 1]
 
-    expect(m.io.rocc_busy, true.B)
-    expect(m.io.rocc_cmd_ready, false.B)
-    expect(m.io.rocc_resp_valid, true.B)
-    expect(m.io.ready, false.B)
+  expect(m.io.cmd_valid, true.B ) // input queue not empty
+  expect(m.io.cmd_bits_rs1, i.U )
+  expect(m.io.cmd_bits_rs2, i.U )
+  expect(m.io.cmd_bits_funct, i.U )
+  expect(m.io.rocc_cmd_ready, true.B ) // input queue not full
 
-    // give_result
+  step(1) // 3-> 4
 
-    step(1) // give_result -> idle
+  // qi = [NULL, NULL, NULL]
 
-    expect(m.io.rocc_busy, false.B)
-    expect(m.io.rocc_cmd_ready, true.B)
-    expect(m.io.rocc_resp_valid, false.B)
-    expect(m.io.ready, false.B)
+  // check if the queue now is empty again
 
-    // idle
+  expect(m.io.cmd_valid, false.B ) // input queue empty
+  expect(m.io.rocc_cmd_ready, true.B ) // input queue not full
 
-    poke(m.io.rocc_cmd_valid, true.B)
-    poke(m.io.rocc_cmd_bits_inst_rd, 4.U)
-    poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
-
-    step(1) // idle -> exec
-
-    poke(m.io.done , true.B )
-    poke(m.io.rocc_resp_ready, true.B )
-
-    step(1) // exec -> give_result
-
-    expect(m.io.rocc_resp_bits_rd, 4.U)
-
-    expect(m.io.rocc_busy, true.B)
-    expect(m.io.rocc_cmd_ready, false.B)
-    expect(m.io.rocc_resp_valid, true.B)
-    expect(m.io.ready, false.B)
-
-    // give_result
-
-    step(1) // give_result -> idle
-
-    expect(m.io.rocc_busy, false.B)
-    expect(m.io.rocc_cmd_ready, true.B)
-    expect(m.io.rocc_resp_valid, false.B)
-    expect(m.io.ready, false.B)
 
 }
 
 
-class BusyTest (m : CustomInterfaceControllerTest) extends PeekPokeTester(m){
 
-  // idle 
+class InputQueueFullTest(m : CustomInterfaceControllerTest, n: Int) extends PeekPokeTester(m){
 
-  for(i <- 0 to 3){
-    // idle
+  var i = 3
 
-    poke(m.io.rocc_cmd_valid, false.B)
-    poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
-
-    step(1) // idle -> idle
-
-    expect(m.io.rocc_busy, false.B)
-    expect(m.io.rocc_interrupt, false.B )
-
-  }
-
-  // idle
-
-  poke(m.io.rocc_cmd_valid, true.B)
-  poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
-
-  step(1) // idle -> exec
-
-  expect(m.io.rocc_busy, true.B )
-  expect(m.io.rocc_interrupt, false.B )
-
-  // exec
-
-  for(i <- 0 to 3){
-
-    // exec
-
-    poke(m.io.rocc_cmd_valid, true.B)
-    poke(m.io.done, false.B)
+  // queue empty, fill it with some values
 
 
-    step(1) // exec -> exec
+  poke(m.io.rocc_cmd_valid, true.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, i.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+  poke(m.io.cmd_ready, false.B )
 
-    expect(m.io.rocc_busy, true.B)
-    expect(m.io.rocc_interrupt, false.B )
+  // qi = [NULL, NULL, NULL]
 
-  }
+  step(1)
 
-  // exec
+  // qi = [NULL, NULL, 3] -> 3
 
-  poke(m.io.done, true.B )
-  poke(m.io.rocc_resp_ready, false.B )
+  expect(m.io.cmd_valid, true.B ) // input queue not empty
+  expect(m.io.cmd_bits_rs1, i.U )
+  expect(m.io.cmd_bits_rs2, i.U )
+  expect(m.io.cmd_bits_funct, i.U )
+  expect(m.io.rocc_cmd_ready, true.B ) // input queue not full
 
-  step(1) // exec -> wait_result 
+  i+= 1
 
-  expect(m.io.rocc_busy, true.B)
-  expect(m.io.rocc_interrupt, false.B )
+  poke(m.io.rocc_cmd_valid, true.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, i.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+  poke(m.io.cmd_ready, false.B )
 
-  for(i <- 0 to 3){
+  // qi = [NULL, NULL, 3] -> 3
 
-    // wait_result
+  step(1)
 
-    poke(m.io.rocc_resp_ready, false.B)
+  // qi = [NULL, 4, 3] -> 3
 
-    step(1) // wait_result -> wait_result
+  expect(m.io.cmd_valid, true.B ) // input queue not empty
+  expect(m.io.cmd_bits_rs1, 3.U )
+  expect(m.io.cmd_bits_rs2, 3.U )
+  expect(m.io.cmd_bits_funct, 3.U )
+  expect(m.io.rocc_cmd_ready, true.B ) // input queue not full
 
-    expect(m.io.rocc_busy, true.B)
-    expect(m.io.rocc_interrupt, false.B )
-  }
+  i+= 1
 
-  // wait_result
+  poke(m.io.rocc_cmd_valid, true.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, i.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+  poke(m.io.cmd_ready, false.B )
 
-  poke(m.io.rocc_resp_ready, true.B)
+  // qi = [NULL, 4, 3]
 
-  step(1) // wait_result -> give_result
+  step(1)
 
-  expect(m.io.rocc_busy, true.B)
-  expect(m.io.rocc_interrupt, false.B )
+  // qi = [5, 4, 3] -> 3
 
-  // give_result
+  expect(m.io.cmd_valid, true.B ) // input queue not empty
+  expect(m.io.cmd_bits_rs1, 3.U )
+  expect(m.io.cmd_bits_rs2, 3.U )
+  expect(m.io.cmd_bits_funct, 3.U )
+  expect(m.io.rocc_cmd_ready, false.B ) // input queue full
 
-  step(1) // give_result -> idle
+  i+= 1
 
-  expect(m.io.rocc_busy, false.B )
-  expect(m.io.rocc_interrupt, false.B )
+  poke(m.io.rocc_cmd_valid, true.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, i.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+  poke(m.io.cmd_ready, false.B )
+
+  // 6 asks : qi = [5, 4, 3]
+
+  step(1)
+
+  // qi = [5, 4, 3] -> 3 : 6 was not enqueued because queue is full
+
+  expect(m.io.cmd_valid, true.B ) // input queue not empty
+  expect(m.io.cmd_bits_rs1, 3.U )
+  expect(m.io.cmd_bits_rs2, 3.U )
+  expect(m.io.cmd_bits_funct, 3.U )
+  expect(m.io.rocc_cmd_ready, false.B ) // input queue full
+
+  i+= 1
+
+  poke(m.io.rocc_cmd_valid, true.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, i.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+  poke(m.io.cmd_ready, true.B )
+
+  // 7 asks : qi = [5, 4, 3]
+
+  step(1)
+
+  // qi = [NULL, 5, 4] -> 4 : 7 was rejected in the last CK because the queue was full, now the CK raises and then it shifts the queue elements
+
+  expect(m.io.cmd_valid, true.B ) // input queue not empty
+  expect(m.io.cmd_bits_rs1, 4.U )
+  expect(m.io.cmd_bits_rs2, 4.U )
+  expect(m.io.cmd_bits_funct, 4.U )
+  expect(m.io.rocc_cmd_ready, true.B ) // input queue not full
+  
+  poke(m.io.rocc_cmd_valid, true.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, i.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+  poke(m.io.cmd_ready, false.B )
+
+  // 7 asks : qi = [NULL, 5, 4]
+
+  step(1)
+
+  // qi = [7, 5, 4] -> 4 : 7 was accpted because in the last CK there was a free space
+
+  expect(m.io.cmd_valid, true.B ) // input queue not empty
+  expect(m.io.cmd_bits_rs1, 4.U )
+  expect(m.io.cmd_bits_rs2, 4.U )
+  expect(m.io.cmd_bits_funct, 4.U )
+  expect(m.io.rocc_cmd_ready, false.B ) // input queue full
+
+  i+= 1
+
+  poke(m.io.rocc_cmd_valid, false.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, i.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+  poke(m.io.cmd_ready, true.B )
+
+  // qi = [7, 5, 4] 
+
+  step(1)
+
+  // qi = [NULL, 7, 5] -> 5
+
+  expect(m.io.cmd_valid, true.B ) // input queue not empty
+  expect(m.io.cmd_bits_rs1, 5.U )
+  expect(m.io.cmd_bits_rs2, 5.U )
+  expect(m.io.cmd_bits_funct, 5.U )
+  expect(m.io.rocc_cmd_ready, true.B ) // input queue not full
+
+  i+= 1
+
+  poke(m.io.rocc_cmd_valid, true.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, i.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+  poke(m.io.cmd_ready, false.B )
+
+  // 9 asks : qi = [NULL, 7, 5] 
+
+  step(1)
+
+  // qi = [9, 7, 5] -> 5
+
+  expect(m.io.cmd_valid, true.B ) // input queue not empty
+  expect(m.io.cmd_bits_rs1, 5.U )
+  expect(m.io.cmd_bits_rs2, 5.U )
+  expect(m.io.cmd_bits_funct, 5.U )
+  expect(m.io.rocc_cmd_ready, false.B ) // input queue full
+
+  poke(m.io.rocc_cmd_valid, false.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, i.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+  poke(m.io.cmd_ready, true.B )
+
+  // qi = [9, 7, 5] 
+
+  step(1)
+
+  // qi = [NULL, 9, 7] -> 7
+
+  expect(m.io.cmd_valid, true.B ) // input queue not empty
+  expect(m.io.cmd_bits_rs1, 7.U )
+  expect(m.io.cmd_bits_rs2, 7.U )
+  expect(m.io.cmd_bits_funct, 7.U )
+  expect(m.io.rocc_cmd_ready, true.B ) // input queue not full
+
+  poke(m.io.rocc_cmd_valid, false.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, i.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+  poke(m.io.cmd_ready, true.B )
+
+  // qi = [NULL, 7, 9] 
+
+  step(1)
+
+  // qi = [NULL, NULL, 9] -> 9
+
+  expect(m.io.cmd_valid, true.B ) // input queue not empty
+  expect(m.io.cmd_bits_rs1, 9.U )
+  expect(m.io.cmd_bits_rs2, 9.U )
+  expect(m.io.cmd_bits_funct, 9.U )
+  expect(m.io.rocc_cmd_ready, true.B ) // input queue not full
+
+  poke(m.io.rocc_cmd_valid, false.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, i.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+  poke(m.io.cmd_ready, true.B )
+
+  // qi = [NULL, NULL, 9] 
+
+  step(1)
+
+  // qi = [NULL, NULL, NULL] -> ??
+
+  expect(m.io.cmd_valid, false.B ) // input queue empty
+  expect(m.io.rocc_cmd_ready, true.B ) // input queue NOT full
+
+}
+
+class OutputQueueEmptyTest(m : CustomInterfaceControllerTest, n: Int) extends PeekPokeTester(m){
+
+  var i = 1
+  // qout: [NULL, NULL, NULL]
+
+  expect(m.io.resp_ready, true.B ) // the queue is NOT full (tis signal, differently from the valid from rocc, always represents the real queue status)
+  expect(m.io.rocc_resp_valid, true.B ) // here, normally it SHOULD be false, but since the controller works in such a way that the queue is activated toward the rocc response interface only if valid === 1 && funct === 2.U, this is true
+
+  poke(m.io.resp_valid, false.B )
+  poke(m.io.resp_bits_data, i.U )
+  poke(m.io.rocc_resp_ready, true.B )
+  poke(m.io.rocc_cmd_valid, true.B ) // this with rocc_cmd_funct allows the output queue to be activated
+  poke(m.io.rocc_cmd_bits_inst_funct, 2.U ) // this with rocc_cmd_valid allows the output queue to be activated
+
+  // qout: [NULL, NULL, NULL]
+
+  step(1)
+
+  // qout: ?? <- [NULL, NULL, NULL]
+
+  //expect(m.io.rocc_resp_bits_data, i.U )
+  expect(m.io.resp_ready, true.B ) // the queue is NOT full
+  expect(m.io.rocc_resp_valid, false.B ) // the queue is empty
+  
+
+
+}
+
+class OutputQueueFullTest(m : CustomInterfaceControllerTest, n: Int) extends PeekPokeTester(m){
+
+
+  
+}
+
+class InputQueueStallTest(m : CustomInterfaceControllerTest, n: Int) extends PeekPokeTester(m){
+
+
 
 }
 
 
-class FilterInputSignalsTest(m: CustomInterfaceControllerTest) extends PeekPokeTester(m){
-
-  var a = 0
-
-  // idle
-
-  poke(m.io.rocc_cmd_bits_inst_funct, a.U)
-  poke(m.io.rocc_cmd_bits_inst_rd, a.U)
-  poke(m.io.rocc_cmd_bits_inst_opcode, a.U)
-  poke(m.io.rocc_cmd_bits_rs1, a.U)
-  poke(m.io.rocc_cmd_bits_rs2, a.U)
-
-  poke(m.io.rocc_cmd_valid, false.B)
+class OutputQueueStallTest(m : CustomInterfaceControllerTest, n: Int) extends PeekPokeTester(m){
 
 
-  step(1) // idle-> idle 
-
-  expect(m.io.cmd_funct, a.U)
-  expect(m.io.cmd_rs1, a.U)
-  expect(m.io.cmd_rs2, a.U)
-
-  // idle
-
-  poke(m.io.rocc_cmd_bits_inst_funct, a.U)
-  poke(m.io.rocc_cmd_bits_inst_rd, a.U)
-  poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
-  poke(m.io.rocc_cmd_bits_rs1, a.U)
-  poke(m.io.rocc_cmd_bits_rs2, a.U)
-
-  poke(m.io.rocc_cmd_valid, false.B)
-
-
-  step(1) // idle-> idle 
-
-  expect(m.io.cmd_funct, a.U)
-  expect(m.io.cmd_rs1, a.U)
-  expect(m.io.cmd_rs2, a.U)
-
-  a = a + 1
-
-  // idle
-
-  poke(m.io.rocc_cmd_bits_inst_funct, a.U)
-  poke(m.io.rocc_cmd_bits_inst_rd, a.U)
-  poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
-  poke(m.io.rocc_cmd_bits_rs1, a.U)
-  poke(m.io.rocc_cmd_bits_rs2, a.U)
-
-  poke(m.io.rocc_cmd_valid, true.B)
-
-
-  step(1) // idle-> exec
-
-  expect(m.io.cmd_funct, a.U)
-  expect(m.io.cmd_rs1, a.U)
-  expect(m.io.cmd_rs2, a.U)
-
-  for(a <- 0 to 3){
-
-    // exec
-
-    poke(m.io.rocc_cmd_bits_inst_funct, a.U)
-    poke(m.io.rocc_cmd_bits_inst_rd, a.U)
-    poke(m.io.rocc_cmd_bits_inst_opcode,a.U)
-    poke(m.io.rocc_cmd_bits_rs1, a.U)
-    poke(m.io.rocc_cmd_bits_rs2, a.U)
-
-    poke(m.io.done, false.B)
-
-
-    step(1) // exec -> exec
-
-    expect(m.io.cmd_funct, a.U)
-    //expect(m.io.cmd_opcode,a.U)
-    expect(m.io.cmd_rs1, a.U)
-    expect(m.io.cmd_rs2, a.U)
-
-  }
-
-  a = a + 1
-
-  // exec
-
-  poke(m.io.rocc_cmd_bits_inst_funct, a.U)
-  poke(m.io.rocc_cmd_bits_inst_rd, a.U)
-  poke(m.io.rocc_cmd_bits_inst_opcode,a.U)
-  poke(m.io.rocc_cmd_bits_rs1, a.U)
-  poke(m.io.rocc_cmd_bits_rs2, a.U)
-
-  poke(m.io.done, true.B)
-  poke(m.io.rocc_resp_ready, false.B)
-
-
-  step(1) // exec -> wait_result
-
-  expect(m.io.cmd_funct, a.U)
-  //expect(m.io.cmd_opcode,a.U)
-  expect(m.io.cmd_rs1, a.U)
-  expect(m.io.cmd_rs2, a.U)
-
-  expect(m.io.rocc_resp_bits_rd, 1.U)
-
-
-  for(i <- 0 to 3){
-
-    // wait_result
-
-    a = a + 1
-
-    poke(m.io.rocc_cmd_bits_inst_funct, i.U)
-    poke(m.io.rocc_cmd_bits_inst_rd, i.U)
-    poke(m.io.rocc_cmd_bits_inst_opcode, i.U)
-    poke(m.io.rocc_cmd_bits_rs1, i.U)
-    poke(m.io.rocc_cmd_bits_rs2, i.U)
-
-    poke(m.io.rocc_resp_ready, false.B) 
-
-    step(1) // wait_result -> wait_result
-
-    expect(m.io.cmd_funct, i.U)
-    //expect(m.io.cmd_opcode, i.U)
-    expect(m.io.cmd_rs1, i.U)
-    expect(m.io.cmd_rs2, i.U)
-
-  }
-
-  a = a + 1
-
-  // wait_result
-
-    poke(m.io.rocc_cmd_bits_inst_funct, a.U)
-    poke(m.io.rocc_cmd_bits_inst_rd, a.U)
-    poke(m.io.rocc_cmd_bits_inst_opcode, a.U)
-    poke(m.io.rocc_cmd_bits_rs1, a.U)
-    poke(m.io.rocc_cmd_bits_rs2, a.U)
-
-    poke(m.io.rocc_resp_ready, true.B) 
-
-    step(1) // wait_result -> give_result
-
-    expect(m.io.cmd_funct, a.U)
-    //expect(m.io.cmd_opcode, a.U)
-    expect(m.io.cmd_rs1, a.U)
-    expect(m.io.cmd_rs2, a.U)
-
-    a = a + 1 
-
-    // give_result
-
-    poke(m.io.rocc_cmd_bits_inst_funct, a.U)
-    poke(m.io.rocc_cmd_bits_inst_rd, a.U)
-    poke(m.io.rocc_cmd_bits_inst_opcode, a.U)
-    poke(m.io.rocc_cmd_bits_rs1, a.U)
-    poke(m.io.rocc_cmd_bits_rs2, a.U)
-
-    step(1) // give_result -> idle
-
-    expect(m.io.cmd_funct, a.U)
-    //expect(m.io.cmd_opcode, a.U)
-    expect(m.io.cmd_rs1, a.U)
-    expect(m.io.cmd_rs2, a.U)
 
 }
 
-class FilterOutputSignalsTest(m : CustomInterfaceControllerTest) extends PeekPokeTester(m){
 
 
-  var a = 0
 
-  // idle
-
-  poke(m.io.resp_data, a.U)
-  poke(m.io.rocc_cmd_valid, false.B)
-  poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
-
-
-  step(1) // idle-> idle 
-
-  expect(m.io.rocc_resp_bits_data, a.U)
-  expect(m.io.rocc_resp_valid, false.B )
-
-  a = a + 1
-
-  // idle
-
-  poke(m.io.resp_data, a.U)
-  poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
-
-  poke(m.io.rocc_cmd_valid, true.B)
-
-
-  step(1) // idle-> exec 
-
-  expect(m.io.rocc_resp_bits_data, a.U)
-  expect(m.io.rocc_resp_valid, false.B )
-
-  for(a <- 0 to 3){
-
-    // exec
-
-    poke(m.io.resp_data, a.U)
-    poke(m.io.done, false.B)
-
-
-    step(1) // exec -> exec
-
-    expect(m.io.rocc_resp_bits_data, a.U)
-    expect(m.io.rocc_resp_valid, false.B )
-
-  }
-
-
-  // exec
-
-  poke(m.io.resp_data, 20.U)
-  poke(m.io.done, true.B)
-  poke(m.io.rocc_resp_ready, false.B)
-
-  step(1) // exec -> wait_result
-
-  expect(m.io.rocc_resp_bits_data, 20.U)
-  expect(m.io.rocc_resp_valid, true.B)
-
-  for(i <- 0 to 3){
-
-    // wait_result
-
-    poke(m.io.resp_data, i.U)
-    poke(m.io.rocc_resp_ready, false.B)
-
-    step(1) // wait_result -> wait_result
-
-    expect(m.io.rocc_resp_bits_data, 20.U)
-    expect(m.io.rocc_resp_valid, true.B )
-
-  }
-
-  // wait_result
-
-  poke(m.io.resp_data, 30.U)
-  poke(m.io.rocc_resp_ready, true.B)
-
-  step(1) // wait_result -> give_result
-
-  expect(m.io.rocc_resp_bits_data, 20.U)
-  expect(m.io.rocc_resp_valid, true.B)
-
-  // give_result
-
-  poke(m.io.resp_data, 40.U)
-
-  step(1) // give_result -> idle
-
-  expect(m.io.rocc_resp_bits_data, 40.U)
-  expect(m.io.rocc_resp_valid, false.B)
-
-
-  // -------------------------------------- now the same, but with immediate return of result
-
-  // idle
-
-  a = 0
-
-  poke(m.io.resp_data, a.U)
-  poke(m.io.rocc_cmd_valid, false.B)
-  poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
-
-
-  step(1) // idle-> idle 
-
-  expect(m.io.rocc_resp_bits_data, a.U)
-  expect(m.io.rocc_resp_valid, false.B )
-
-  a = a + 1
-
-  // idle
-
-  poke(m.io.resp_data, a.U)
-  poke(m.io.rocc_cmd_bits_inst_opcode, "b0001011".U)
-
-  poke(m.io.rocc_cmd_valid, true.B)
-
-
-  step(1) // idle-> exec 
-
-  expect(m.io.rocc_resp_bits_data, a.U)
-  expect(m.io.rocc_resp_valid, false.B )
-
-  for(a <- 0 to 3){
-
-    // exec
-
-    poke(m.io.resp_data, a.U)
-    poke(m.io.done, false.B)
-
-
-    step(1) // exec -> exec
-
-    expect(m.io.rocc_resp_bits_data, a.U)
-    expect(m.io.rocc_resp_valid, false.B )
-
-  }
-
-
-  // exec
-
-  poke(m.io.resp_data, 20.U)
-  poke(m.io.done, true.B)
-  poke(m.io.rocc_resp_ready, true.B)
-
-  step(1) // exec -> give_result
-
-  expect(m.io.rocc_resp_bits_data, 20.U)
-  expect(m.io.rocc_resp_valid, true.B)
-
-  // give_result
-
-  poke(m.io.resp_data, 40.U)
-
-  step(1) // give_result -> idle
-
-  expect(m.io.rocc_resp_bits_data, 40.U)
-  expect(m.io.rocc_resp_valid, false.B)
-}
-
-*/
-
-class CustomInterfaceControllerTest extends Module{
-  val io = IO(new Bundle {
-      val in = Flipped(Decoupled(UInt(8.W))) // inputs : bits, valid (out : ready)
-      val out = Decoupled(UInt(8.W)) // inputs : ready (out : bits, valid)
-    })
-    val queue = Queue(io.in, 2)  // 2-element queue
-    //queue.enq(io.out.bits)
-    io.out <> queue
-}
-
-class Queue_test(mo: CustomInterfaceControllerTest) extends PeekPokeTester(mo){
-
-  poke(mo.io.in.valid, true.B )
-  poke(mo.io.in.bits, 20.U )
-  poke(mo.io.out.ready, false.B )
-
-  // q = [ NULL, NULL]
-
-  step(1)
-
-  // q = [NULL, 20] -> 20
-
-  expect(mo.io.in.ready, true.B ) // the queue is NOT full
-  expect(mo.io.out.valid, true.B ) // the queue is NOT empty
-  expect(mo.io.out.bits, 20.U )
-
-  poke(mo.io.in.valid, true.B )
-  poke(mo.io.in.bits, 40.U )
-  poke(mo.io.out.ready, false.B )
-
-  step(1)
-
-  // q = [40, 20] -> 20
-
-  expect(mo.io.in.ready, false.B ) // the queue is FULL
-  expect(mo.io.out.valid, true.B ) // the queue is NOT empty
-  expect(mo.io.out.bits, 20.U )
-
-  poke(mo.io.in.valid, true.B )
-  poke(mo.io.in.bits, 60.U )
-  poke(mo.io.out.ready, false.B )
-
-  step(1)
-
-  // q = [40, 20] -> 20
-
-  expect(mo.io.in.ready, false.B ) // the queue is FULL
-  expect(mo.io.out.valid, true.B ) // the queue is NOT empty
-  expect(mo.io.out.bits, 20.U )
-
-  poke(mo.io.in.valid, false.B )
-  poke(mo.io.in.bits, 80.U )
-  poke(mo.io.out.ready, true.B )
-
-  step(1)
-
-  // q = [NULL, 40] -> 40
-
-  expect(mo.io.in.ready, true.B ) // the queue is NOT empty
-  expect(mo.io.out.valid, true.B ) // the queue is NOT empty
-  expect(mo.io.out.bits, 40.U )
-
-  poke(mo.io.in.valid, false.B )
-  poke(mo.io.in.bits, 80.U )
-  poke(mo.io.out.ready, true.B )
-
-  step(1)
-
-  // q = [NULL, NULL] -> ??
-
-  expect(mo.io.in.ready, true.B ) // the queue is NOT full
-  expect(mo.io.out.valid, false.B ) // the queue is EMPTY
-  //expect(mo.io.out.bits, 0.U ) not valid => does not make sense to check the content
-
-  poke(mo.io.in.valid, true.B )
-  poke(mo.io.in.bits, 80.U )
-  poke(mo.io.out.ready, false.B )
-
-  step(1)
-
-  expect(mo.io.in.ready, true.B )
-  expect(mo.io.out.valid, true.B )
-  expect(mo.io.out.bits, 80.U )
-
-}
 
 
 class ControllerTest extends ChiselFlatSpec {
 
   val testerArgs = Array("")
 
-  /*
+  val n = 3
 
-  behavior of "StateMachineTestAndRd"
-  it should "change state correctly, and gives back rd correctly" in {
-    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceControllerTest()) {
-      c => new StateMachineTestAndRd(c)
+  behavior of "InputQueueEmptyTest"
+  it should "Enqueue and behave correctly when goes from empty to (not completely) full, from ROCC CMD" in {
+    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceControllerTest(n)) {
+      c => new InputQueueEmptyTest(c, n)
+    } should be (true)
+  } 
+
+  behavior of "InputQueueFullTest"
+  it should "Enqueue and behave correctly when goes from (not completely) to completely full, from ROCC CMD" in {
+    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceControllerTest(n)) {
+      c => new InputQueueFullTest(c, n)
+    } should be (true)
+  } 
+
+  behavior of "OutputQueueEmptyTest"
+  it should "Enqueue and behave correctly when goes from empty to completely (not completely) full, from PE RESP" in {
+    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceControllerTest(n)) {
+      c => new OutputQueueEmptyTest(c, n)
     } should be (true)
   }
 
-  behavior of "BusyTest"
-  it should "be Busy while in exec state, and interrupt always false" in {
-    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceControllerTest()) {
-      c => new BusyTest(c)
+  behavior of "OutputQueueFullTest"
+  it should "Enqueue and behave correctly when goes from (not completely) to completely full, from PE RESP" in {
+    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceControllerTest(n)) {
+      c => new OutputQueueFullTest(c, n)
     } should be (true)
   }
 
-  behavior of "FilterInputSignalsTest"
-  it should "Filter the right signals when given in input from rocc to cmd" in {
-    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceControllerTest()) {
-      c => new FilterInputSignalsTest(c)
+  behavior of "OutputQueueStallTest"
+  it should "Stall and store the current values when the funct is not get_load(when rocc_cmd_bits_inst_funct != 2.U )" in {
+    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceControllerTest(n)) {
+      c => new OutputQueueStallTest(c, n)
     } should be (true)
   }
 
-  behavior of "FilterOutputSignalsTest"
-  it should "Filter the right signals when given in output from resp to rocc" in {
-    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceControllerTest()) {
-      c => new FilterOutputSignalsTest(c)
+  behavior of "InputQueueStallTest"
+  it should "Stall and store the current values when the funct is get_load(when rocc_cmd_bits_inst_funct === 2.U )" in {
+    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceControllerTest(n)) {
+      c => new OutputQueueStallTest(c, n)
     } should be (true)
-  }  
+  }
 
-  */
 
-  behavior of "Queue"
-  it should "Boh" in {
-    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceControllerTest()) {
-      c => new Queue_test(c)
-    } should be (true)
-  }  
 
 }
+

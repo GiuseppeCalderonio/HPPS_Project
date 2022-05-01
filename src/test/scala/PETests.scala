@@ -64,7 +64,7 @@ class PEPipelineTest(m: CustomInterfacePETests) extends PeekPokeTester(m){
 
     expect(m.io.resp_bits_data, 100.U )
     expect(m.io.cmd_ready, true.B )
-    expect(m.io.resp_valid, true.B )
+    expect(m.io.resp_valid, false.B )
 
     // load
     poke(m.io.cmd_bits_rs1, (i+1).U)
@@ -99,7 +99,7 @@ class PEKeepRegisterValueTest(m: CustomInterfacePETests) extends PeekPokeTester(
 
   expect(m.io.resp_bits_data, 100.U )
   expect(m.io.cmd_ready, true.B )
-  expect(m.io.resp_valid, true.B )
+  expect(m.io.resp_valid, false.B )
 
 
 
@@ -116,7 +116,7 @@ class PEKeepRegisterValueTest(m: CustomInterfacePETests) extends PeekPokeTester(
 
     expect(m.io.resp_bits_data, 100.U )
     expect(m.io.cmd_ready, false.B )
-    expect(m.io.resp_valid, true.B )
+    expect(m.io.resp_valid, false.B )
 
     // load
     poke(m.io.cmd_bits_rs1, (i+1).U)
@@ -129,7 +129,7 @@ class PEKeepRegisterValueTest(m: CustomInterfacePETests) extends PeekPokeTester(
 
     expect(m.io.resp_bits_data, 100.U )
     expect(m.io.cmd_ready, false.B )
-    expect(m.io.resp_valid, true.B )
+    expect(m.io.resp_valid, false.B )
 
   }
 
@@ -144,7 +144,7 @@ class PEKeepRegisterValueTest(m: CustomInterfacePETests) extends PeekPokeTester(
 
   expect(m.io.resp_bits_data, 100.U )
   expect(m.io.cmd_ready, true.B )
-  expect(m.io.resp_valid, true.B )
+  expect(m.io.resp_valid, false.B )
 
   poke(m.io.cmd_valid, false.B )
   poke(m.io.resp_ready, false.B )

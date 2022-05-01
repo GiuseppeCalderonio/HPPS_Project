@@ -1,0 +1,301 @@
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:4:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:5:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3.iotesters._[0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:6:8: not found: object chisel3[0m
+[0m[[0m[31merror[0m] [0m[0mimport chisel3.util._ [0m
+[0m[[0m[31merror[0m] [0m[0m       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:7:12: object scalatest is not a member of package org[0m
+[0m[[0m[31merror[0m] [0m[0mimport org.scalatest._[0m
+[0m[[0m[31merror[0m] [0m[0m           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:10:62: illegal inheritance from final class Module[0m
+[0m[[0m[31merror[0m] [0m[0mclass CustomInterfaceControllerTest(queue_size: Int) extends Module{[0m
+[0m[[0m[31merror[0m] [0m[0m                                                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:12:14: not found: value IO[0m
+[0m[[0m[31merror[0m] [0m[0m    val io = IO(new Bundle{[0m
+[0m[[0m[31merror[0m] [0m[0m             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:12:21: not found: type Bundle[0m
+[0m[[0m[31merror[0m] [0m[0m    val io = IO(new Bundle{[0m
+[0m[[0m[31merror[0m] [0m[0m                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:15:30: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m        val cmd_bits_funct = Output(Bits(7.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:15:37: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m        val cmd_bits_funct = Output(Bits(7.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:15:44: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m        val cmd_bits_funct = Output(Bits(7.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:16:28: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m        val cmd_bits_rs1 = Output(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:16:35: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m        val cmd_bits_rs1 = Output(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:16:43: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m        val cmd_bits_rs1 = Output(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:17:28: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m        val cmd_bits_rs2 = Output(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:17:35: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m        val cmd_bits_rs2 = Output(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:17:43: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m        val cmd_bits_rs2 = Output(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:18:25: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m        val cmd_ready = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:18:31: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m        val cmd_ready = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:19:25: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m        val cmd_valid = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:19:32: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m        val cmd_valid = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:22:30: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m        val resp_bits_data = Input(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:22:36: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m        val resp_bits_data = Input(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:22:44: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m        val resp_bits_data = Input(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:23:26: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m        val resp_valid = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:23:32: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m        val resp_valid = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:24:26: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m        val resp_ready = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:24:33: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m        val resp_ready = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:28:30: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_ready = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:28:37: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_ready = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:29:30: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_valid = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:29:36: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_valid = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:31:40: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_funct = Input(Bits(7.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:31:46: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_funct = Input(Bits(7.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:31:53: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_funct = Input(Bits(7.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:32:38: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_rs2 = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:32:44: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_rs2 = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:32:51: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_rs2 = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:33:38: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_rs1 = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:33:44: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_rs1 = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:33:51: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_rs1 = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:34:37: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_xd = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:34:43: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_xd = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:35:38: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_xs1 = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:35:44: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_xs1 = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:36:38: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_xs2 = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:36:44: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_xs2 = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:37:37: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_rd = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:37:43: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_rd = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                          ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:37:50: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_rd = Input(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:38:41: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_opcode = Input(Bits(7.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:38:47: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_opcode = Input(Bits(7.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:38:54: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_inst_opcode = Input(Bits(7.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:40:33: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_rs1 = Input(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:40:39: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_rs1 = Input(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:40:47: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_rs1 = Input(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:41:33: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_rs2 = Input(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:41:39: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_rs2 = Input(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                      ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:41:47: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_cmd_bits_rs2 = Input(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:43:31: not found: value Input[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_resp_ready = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:43:37: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_resp_ready = Input(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:44:31: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_resp_valid = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:44:38: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_resp_valid = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                                     ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:45:33: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_resp_bits_rd = Output(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:45:40: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_resp_bits_rd = Output(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                       ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:45:47: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_resp_bits_rd = Output(Bits(5.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                              ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:46:35: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_resp_bits_data = Output(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:46:42: not found: value Bits[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_resp_bits_data = Output(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                         ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:46:50: value W is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_resp_bits_data = Output(Bits(32.W))[0m
+[0m[[0m[31merror[0m] [0m[0m                                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:48:30: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_interrupt = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:48:37: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_interrupt = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                                    ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:49:25: not found: value Output[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_busy = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:49:32: not found: value Bool[0m
+[0m[[0m[31merror[0m] [0m[0m        val rocc_busy = Output(Bool())[0m
+[0m[[0m[31merror[0m] [0m[0m                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:53:17: class java.lang.Module is not a value[0m
+[0m[[0m[31merror[0m] [0m[0m    val contr = Module(new Controller(queue_size))[0m
+[0m[[0m[31merror[0m] [0m[0m                ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:53:28: not found: type Controller[0m
+[0m[[0m[31merror[0m] [0m[0m    val contr = Module(new Controller(queue_size))[0m
+[0m[[0m[31merror[0m] [0m[0m                           ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:91:78: not found: type PeekPokeTester[0m
+[0m[[0m[31merror[0m] [0m[0mclass InputQueueEmptyTest(m : CustomInterfaceControllerTest, n: Int) extends PeekPokeTester(m){[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:91:93: no arguments allowed for nullary constructor Object: ()Object[0m
+[0m[[0m[31merror[0m] [0m[0mclass InputQueueEmptyTest(m : CustomInterfaceControllerTest, n: Int) extends PeekPokeTester(m){[0m
+[0m[[0m[31merror[0m] [0m[0m                                                                                            ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:98:3: not found: value poke[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_valid, false.B )[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:98:35: value B is not a member of Boolean[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_valid, false.B )[0m
+[0m[[0m[31merror[0m] [0m[0m                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:99:3: not found: value poke[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_bits_inst_funct, i.U )[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:99:41: value U is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_bits_inst_funct, i.U )[0m
+[0m[[0m[31merror[0m] [0m[0m                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:100:3: not found: value poke[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_bits_rs1, i.U )[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:100:34: value U is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_bits_rs1, i.U )[0m
+[0m[[0m[31merror[0m] [0m[0m                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:101:3: not found: value poke[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_bits_rs2, i.U )[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:101:34: value U is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_bits_rs2, i.U )[0m
+[0m[[0m[31merror[0m] [0m[0m                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:102:3: not found: value poke[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.cmd_ready, false.B ) [0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:102:30: value B is not a member of Boolean[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.cmd_ready, false.B ) [0m
+[0m[[0m[31merror[0m] [0m[0m                             ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:104:3: not found: value step[0m
+[0m[[0m[31merror[0m] [0m[0m  step(1) // 0 -> 1[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:107:3: not found: value expect[0m
+[0m[[0m[31merror[0m] [0m[0m  expect(m.io.cmd_valid, false.B ) // input queue empty[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:107:32: value B is not a member of Boolean[0m
+[0m[[0m[31merror[0m] [0m[0m  expect(m.io.cmd_valid, false.B ) // input queue empty[0m
+[0m[[0m[31merror[0m] [0m[0m                               ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:108:3: not found: value expect[0m
+[0m[[0m[31merror[0m] [0m[0m  expect(m.io.rocc_cmd_ready, true.B ) // input queue not full[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:108:36: value B is not a member of Boolean[0m
+[0m[[0m[31merror[0m] [0m[0m  expect(m.io.rocc_cmd_ready, true.B ) // input queue not full[0m
+[0m[[0m[31merror[0m] [0m[0m                                   ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:111:3: not found: value poke[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_valid, false.B )[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:111:35: value B is not a member of Boolean[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_valid, false.B )[0m
+[0m[[0m[31merror[0m] [0m[0m                                  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:112:3: not found: value poke[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_bits_inst_funct, i.U )[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:112:41: value U is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_bits_inst_funct, i.U )[0m
+[0m[[0m[31merror[0m] [0m[0m                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:113:3: not found: value poke[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_bits_rs1, i.U )[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:113:34: value U is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_bits_rs1, i.U )[0m
+[0m[[0m[31merror[0m] [0m[0m                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:114:3: not found: value poke[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_bits_rs2, i.U )[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:114:34: value U is not a member of Int[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.rocc_cmd_bits_rs2, i.U )[0m
+[0m[[0m[31merror[0m] [0m[0m                                 ^[0m
+[0m[[0m[31merror[0m] [0m[0m/home/ersorcio/chipyard/generators/torus/src/test/scala/ControllerTest.scala:115:3: not found: value poke[0m
+[0m[[0m[31merror[0m] [0m[0m  poke(m.io.cmd_ready, true.B )[0m
+[0m[[0m[31merror[0m] [0m[0m  ^[0m
+[0m[[0m[31merror[0m] [0m[0m689 errors found[0m

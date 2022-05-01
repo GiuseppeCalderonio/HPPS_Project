@@ -34,6 +34,7 @@ class PE(id: Int) extends Module{
         val cmd = Flipped(Decoupled(new Command)) // inputs : bits, valid (out : ready)
         val resp = Decoupled(new Response) // inputs : ready (out : bits, valid)
         val conn = new Connections
+        //val was_store = Output(Bool())
     })
 
     //register memory with some custom funcionalities (load immediate, store immediate)
@@ -44,6 +45,11 @@ class PE(id: Int) extends Module{
         // 1) the controller expects to recive the result in the next clock cycle
         // 2) if the controller cannot recive the result (resp_ready = false) we have to keep it until it can
     val keep_reg = Module(new KeepReg(32))
+
+    // buffer in which storing the operation that was issued by the result
+    // needed because if this is a store, it's not actually needed to give a valid = true as
+    // output since the response will be asked on demand in the controller when funct === 2.U
+    val keep_funct = Module(new KeepReg(7))
 
     // stores the result of the operation
     val op_result = Wire(Bits(32.W))
@@ -59,7 +65,7 @@ class PE(id: Int) extends Module{
     state_machine.io.cmd_valid := io.cmd.valid
     state_machine.io.resp_ready := io.resp.ready
     io.cmd.ready := state_machine.io.cmd_ready
-    io.resp.valid := state_machine.io.resp_valid
+    //io.resp.valid := state_machine.io.resp_valid
     keep := state_machine.io.keep
 
 
@@ -88,16 +94,27 @@ class PE(id: Int) extends Module{
     // connecting the output to the PE memory
     op_result := memory.io.result
 
-    // connecting inputs to keep_register
+    // connecting inputs to keep_register and keep_funct (they work in parallel)
     keep_reg.io.keep := keep
     keep_reg.io.in := op_result
+    keep_funct.io.in := io.cmd.bits.funct
+    keep_funct.io.keep := keep
 
-    // connecting register to output
+    // connecting register to output of keep_register and keep_funct
     io.resp.bits.data := keep_reg.io.out
-
+    //io.was_store := keep_funct.io.out === 1.U 
+ 
     // default, in future they will change
     io.conn.right.out := 0.U 
     io.conn.left.out := 0.U 
+
+    // another possible solution may be :
+    
+    
+    io.resp.valid := state_machine.io.resp_valid && !keep_funct.io.out === 1.U
+    
+    
+    
 
  //----------------------END DATAPATH-----------------------------
 

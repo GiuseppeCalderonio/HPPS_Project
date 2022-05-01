@@ -1,6 +1,6 @@
 
 package torus
-
+/*
 import chisel3._
 import chisel3.iotesters._
 import chisel3.util._ 
@@ -241,5 +241,5 @@ class TorusTest extends ChiselFlatSpec {
   }
 
 }
-
+*/
 

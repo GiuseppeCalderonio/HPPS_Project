@@ -59,7 +59,7 @@ this module is the "main" module, which connects and contains all the high level
 components, so the controller with the set of PEs
 
 */
-class TorusAcceleratorModuleImpl(n : Int = 4) extends LazyRoCCModuleImpCustom{
+class Torus(n : Int = 4) extends LazyRoCCModuleImpCustom{
 
   def module(i : Int ): Int = {
     if(i < 0) return i + n
@@ -67,7 +67,7 @@ class TorusAcceleratorModuleImpl(n : Int = 4) extends LazyRoCCModuleImpCustom{
     else return i
   }
 
-  val controller = Module(new Controller)
+  val controller = Module(new Controller(5))
 
   var temp = Seq[PE]()
 
@@ -87,24 +87,15 @@ class TorusAcceleratorModuleImpl(n : Int = 4) extends LazyRoCCModuleImpCustom{
 
   pe.seq.foreach( pe_i => {
   
-    pe_i.io.cmd <> controller.io.cmd 
-    //pe_i.io.ready := controller.io.ready
+    pe_i.io.cmd.valid := controller.io.cmd.valid 
+    pe_i.io.cmd.bits.rs1 := controller.io.cmd.bits.rs1
+    pe_i.io.cmd.bits.rs2 := controller.io.cmd.bits.rs2
+    pe_i.io.cmd.bits.funct := controller.io.cmd.bits.funct
+    pe_i.io.resp.ready := controller.io.resp.ready
   
   })
 
-  //controller.io.resp.data := pe.map(_.io.resp.data).reduce(_ & _) // does not make sense right now, just to test
-
-  //controller.io.done := pe.map(_.io.done).reduce(_ && _) // done iif all the PEs are done
-
-  /*
-  pe.io.cmd <> controller.io.cmd 
-  pe.io.resp <> controller.io.resp
-
-  pe.io.ready := controller.io.ready
-
-  // ideally here : done := PE1.done && PE2.done && .... 
-
-  controller.io.done := pe.io.done*/
-  
-
+  controller.io.cmd.ready := pe.map(_.io.cmd.ready).reduce(_ & _)
+  controller.io.resp.valid := pe.map(_.io.resp.valid).reduce(_ & _)
+  controller.io.resp.bits.data := pe.map(_.io.resp.bits.data).reduce(_ & _)
 }

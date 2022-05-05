@@ -405,7 +405,7 @@ class OutputQueueEmptyTest(m : CustomInterfaceControllerTest, n: Int) extends Pe
   // qout: [NULL, NULL, NULL]
 
   expect(m.io.resp_ready, true.B ) // the queue is NOT full (tis signal, differently from the valid from rocc, always represents the real queue status)
-  expect(m.io.rocc_resp_valid, true.B ) // here, normally it SHOULD be false, but since the controller works in such a way that the queue is activated toward the rocc response interface only if valid === 1 && funct === 2.U, this is true
+  expect(m.io.rocc_resp_valid, false.B ) // false, not because the queue is empty, but because rocc_cmd_valid = false
 
   poke(m.io.resp_valid, false.B )
   poke(m.io.resp_bits_data, i.U )
@@ -495,7 +495,7 @@ class OutputQueueFullTest(m : CustomInterfaceControllerTest, n: Int) extends Pee
   // qout: [NULL, NULL, NULL]
 
   expect(m.io.resp_ready, true.B ) // the queue is NOT full (tis signal, differently from the valid from rocc, always represents the real queue status)
-  expect(m.io.rocc_resp_valid, true.B ) // here, normally it SHOULD be false, but since the controller works in such a way that the queue is activated toward the rocc response interface only if valid === 1 && funct === 2.U, this is true
+  expect(m.io.rocc_resp_valid, false.B ) // false, not because the queue is empty, but because rocc_cmd_valid = false
 
   poke(m.io.resp_valid, true.B )
   poke(m.io.resp_bits_data, i.U )
@@ -962,7 +962,7 @@ class OutputQueueStallTest(m : CustomInterfaceControllerTest, n: Int) extends Pe
   // qout: [NULL, NULL, NULL]
 
   expect(m.io.resp_ready, true.B ) // the queue is NOT full (this signal, differently from the valid from rocc, always represents the real queue status)
-  expect(m.io.rocc_resp_valid, true.B ) // here, normally it SHOULD be false, but since the controller works in such a way that the queue is activated toward the rocc response interface only if valid === 1 && funct === 2.U, this is true
+  expect(m.io.rocc_resp_valid, false.B ) // false, not because the queue is empty, but because rocc_cmd_valid = false
 
   poke(m.io.resp_valid, true.B )
   poke(m.io.resp_bits_data, i.U )
@@ -1021,6 +1021,8 @@ class OutputQueueStallTest(m : CustomInterfaceControllerTest, n: Int) extends Pe
 
 class ConstantSignalsTest(m : CustomInterfaceControllerTest, n: Int) extends PeekPokeTester(m){
 
+  
+
   for(i <- 0 to 16){
     poke(m.io.rocc_cmd_valid, (i % 2 >= 1).B)
     poke(m.io.cmd_ready, ((i % 4) >= 2).B)
@@ -1031,8 +1033,10 @@ class ConstantSignalsTest(m : CustomInterfaceControllerTest, n: Int) extends Pee
 
     step(1)
 
+    
+
     expect(m.io.rocc_resp_bits_rd, i.U )
-    expect(m.io.rocc_busy, false.B)
+    //expect(m.io.rocc_busy, )
     expect(m.io.rocc_interrupt, false.B )
   }
 

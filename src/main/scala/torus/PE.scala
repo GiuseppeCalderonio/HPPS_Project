@@ -34,7 +34,6 @@ class PE(id: Int) extends Module{
         val cmd = Flipped(Decoupled(new Command)) // inputs : bits, valid (out : ready)
         val resp = Decoupled(new Response) // inputs : ready (out : bits, valid)
         val conn = new Connections
-        //val was_store = Output(Bool())
     })
 
     //register memory with some custom funcionalities (load immediate, store immediate)

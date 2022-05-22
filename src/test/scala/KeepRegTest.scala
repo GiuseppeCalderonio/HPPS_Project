@@ -55,6 +55,8 @@ class KeepValuesTest(m : KeepReg) extends PeekPokeTester(m){
 
 class KeepRegTest extends ChiselFlatSpec {
 
+
+
   val testerArgs = Array("")
 
   behavior of "PushNewValuesTest"
@@ -72,5 +74,22 @@ class KeepRegTest extends ChiselFlatSpec {
   }
 
   
+  //val testerArgs = Array("")
+
+  val n = 3
+
+  behavior of "PushNewValuesTest"
+  it should "work as a normal register when keep = false" in {
+    chisel3.iotesters.Driver.execute( Array(""), () => new KeepReg(n)) {
+      c => new PushNewValuesTest(c)
+    } should be (true)
+  } 
+
+  behavior of "KeepValuesTest"
+  it should "keep inside the last result until keep = true" in {
+    chisel3.iotesters.Driver.execute( Array(""), () => new KeepReg(n)) {
+      c => new PushNewValuesTest(c)
+    } should be (true)
+  } 
   
 }

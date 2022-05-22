@@ -67,7 +67,7 @@ class Controller(queue_size : Int = 5) extends Module{
     out_q.ready := rocc.resp.ready && in_valid && is_get_load 
 
     rocc.resp.valid := (out_q.valid || !is_get_load) && in_valid // makes sense to return a valid resp only if the command is valid as well???
-    rocc.resp.bits.data := Mux(in_valid && is_get_load, out_q.bits.data, 0.U)
+    rocc.resp.bits.data := Mux(in_valid && is_get_load, out_q.bits.data, 13.U)
     rocc.resp.bits.rd := rocc.cmd.bits.inst.rd
 
 

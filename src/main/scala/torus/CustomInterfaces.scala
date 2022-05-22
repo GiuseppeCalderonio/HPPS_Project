@@ -92,7 +92,7 @@ class TorusAcceleratorModule(outer: TorusAccelerator) extends LazyRoCCModuleImp(
   io.resp.bits.rd := torus.io.resp.bits.rd
   io.resp.bits.data := torus.io.resp.bits.data
   io.interrupt := false.B 
-  io.busy := torus.io.busy
+  io.busy := false.B //torus.io.busy
   
 }
 
@@ -125,6 +125,6 @@ class TorusAcceleratorTESTModule(outer: TorusAccelerator, opcodes: OpcodeSet) ex
   io.resp.bits.rd := myModuleImpl.io.resp.bits.rd
   io.resp.bits.data := myModuleImpl.io.resp.bits.data
   io.interrupt := false.B //myModuleImpl.io.interrupt
-  io.busy := myModuleImpl.io.busy
+  io.busy := false.B //myModuleImpl.io.busy
   
 }

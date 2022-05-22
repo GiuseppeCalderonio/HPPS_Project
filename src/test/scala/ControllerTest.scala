@@ -959,6 +959,7 @@ class OutputQueueStallTest(m : CustomInterfaceControllerTest, n: Int) extends Pe
 
   var i = 1
   val get_load = 2
+  val useless_result = 13
   // qout: [NULL, NULL, NULL]
 
   expect(m.io.resp_ready, true.B ) // the queue is NOT full (this signal, differently from the valid from rocc, always represents the real queue status)
@@ -978,7 +979,7 @@ class OutputQueueStallTest(m : CustomInterfaceControllerTest, n: Int) extends Pe
 
   expect(m.io.resp_ready, true.B ) // the queue is NOT full (this signal, differently from the valid from rocc, always represents the real queue status)
   expect(m.io.rocc_resp_valid, true.B ) // SINCE rocc_cmd_valid && funct !== get_load => rocc_resp_valid := true.B 
-  expect(m.io.rocc_resp_bits_data, 0.U )
+  expect(m.io.rocc_resp_bits_data, useless_result.U )
 
   i = 2
 
@@ -996,7 +997,7 @@ class OutputQueueStallTest(m : CustomInterfaceControllerTest, n: Int) extends Pe
 
   expect(m.io.resp_ready, true.B ) // the queue is NOT full (this signal, differently from the valid from rocc, always represents the real queue status)
   expect(m.io.rocc_resp_valid, true.B ) // SINCE rocc_cmd_valid && funct !== get_load => rocc_resp_valid := true.B 
-  expect(m.io.rocc_resp_bits_data, 0.U )
+  expect(m.io.rocc_resp_bits_data, useless_result.U )
 
   i = 3
 
@@ -1043,9 +1044,32 @@ class ConstantSignalsTest(m : CustomInterfaceControllerTest, n: Int) extends Pee
 }
 
 
+class InvlaidFunctTest(m : CustomInterfaceControllerTest, n: Int) extends PeekPokeTester(m){
+
+  var i = 3
+
+  poke(m.io.rocc_cmd_valid, true.B )
+  poke(m.io.rocc_cmd_bits_inst_funct, 2.U )
+  poke(m.io.rocc_cmd_bits_rs1, i.U )
+  poke(m.io.rocc_cmd_bits_rs2, i.U )
+
+  // qin = [NULL, NULL, NULL]
+
+  step(1)
+
+  // qin = [NULL, NULL, NULL] -> ??
+
+  expect(m.io.rocc_cmd_ready, false.B ) // the output queue is empty, because when funct === get_load it watches the other queue
+  expect(m.io.cmd_valid, false.B ) // the queue is empty because the get_load command should not be accepted
+
+
+}
+
+
 
 class ControllerTest extends ChiselFlatSpec {
 
+  /*
   val testerArgs = Array("")
 
   val n = 3
@@ -1098,6 +1122,14 @@ class ControllerTest extends ChiselFlatSpec {
       c => new ConstantSignalsTest(c, n)
     } should be (true)
   }
+
+  behavior of "InvlaidFunctTest"
+  it should "Enqueue only the right values when requested" in {
+    chisel3.iotesters.Driver.execute( testerArgs, () => new CustomInterfaceControllerTest(n)) {
+      c => new InvlaidFunctTest(c, n)
+    } should be (true)
+  }
+  */
 
 }
 

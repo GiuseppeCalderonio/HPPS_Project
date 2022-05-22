@@ -13,245 +13,315 @@ import freechips.rocketchip.rocket._
 import freechips.rocketchip.tilelink._
 import freechips.rocketchip.util.InOrderArbiter
 
-
+// the id says the first part of the address of the PE memory
+// useful when doing load and stores
 class Port(width: Int) extends Bundle{
-    val in = Input(Bits(width.W))
-    val out = Output(Bits(width.W))
+    val in = Flipped(Decoupled(new Neighbour()))
+    val out = Decoupled(new Neighbour())
 }
 
 class Connections(width: Int = 32) extends Bundle{
-    //val up = new Port(width)
-    //val down = new Port(width)
-    val left = new Port(width)
-    val right = new Port(width)
-    //val ingoing = new Port(width)
-    //val outgoing = new Port(width)
+    val up = new Port(width) // id = 1
+    val down = new Port(width) // id = 2
+    val left = new Port(width) // id = 3
+    val right = new Port(width) // id = 4
 }
 
 
-class PE(id: Int) extends Module{
+class PE(id: Int, width: Int = 32,
+         load_funct: Int = 0, store_funct: Int = 1, exchange_funct: Int = 3,
+         up_memory_partial_address: Int = 1,
+         down_memory_partial_address: Int = 2,
+         left_memory_partial_address: Int = 3,
+         right_memory_partial_address: Int = 4,
+         ) extends Module{
     val io = IO(new Bundle{
         val cmd = Flipped(Decoupled(new Command)) // inputs : bits, valid (out : ready)
         val resp = Decoupled(new Response) // inputs : ready (out : bits, valid)
-        val conn = new Connections
+        val conn = new Connections(width)
     })
 
-    //register memory with some custom funcionalities (load immediate, store immediate)
-    val memory = Module(new PE_memory())
+    // renimimg
 
-    // buffer in which storing the result to return
-    // needed because:
-        // 1) the controller expects to recive the result in the next clock cycle
-        // 2) if the controller cannot recive the result (resp_ready = false) we have to keep it until it can
-    val keep_reg = Module(new KeepReg(32))
+    val cmd = io.cmd
+    val resp = io.resp
+    val conn = io.conn
 
-    // buffer in which storing the operation that was issued by the result
-    // needed because if this is a store, it's not actually needed to give a valid = true as
-    // output since the response will be asked on demand in the controller when funct === 2.U
-    val keep_funct = Module(new KeepReg(7))
+    val funct = cmd.bits.funct
+    val rs1 = cmd.bits.rs1
+    val rs2 = cmd.bits.rs2
 
-    // stores the result of the operation
-    val op_result = Wire(Bits(32.W))
+    val data = resp.bits.data
 
-    // this value here says whether the return register has to keep its value or accept new values
-    val keep = Wire(Bool())
+    val left = conn.left
+    val right = conn.right
+    val up = conn.up
+    val down = conn.down
 
-//----------------------START STATE MACHINE-----------------------------
+    // util signals
 
-    // see doc on the state machine defined below
-    val state_machine = Module(new PE_control_unit)
+    // funct count
+    val is_load = funct === load_funct.U 
+    val is_store = funct === store_funct.U 
+    val is_exchange = funct === exchange_funct.U 
 
-    state_machine.io.cmd_valid := io.cmd.valid
-    state_machine.io.resp_ready := io.resp.ready
-    io.cmd.ready := state_machine.io.cmd_ready
-    //io.resp.valid := state_machine.io.resp_valid
-    keep := state_machine.io.keep
-
-
-//----------------------END STATE MACHINE-----------------------------
-
-    val rs1 = io.cmd.bits.rs1
-    val rs2 = io.cmd.bits.rs2
-
- //----------------------START DATAPATH-----------------------------
-
-
-    // conventions
-    // load: funct == 0.U , result := mem(rs1)
-    // store: funct == 1.U, mem(rs2) := rs1
-
-    // decide which operation to do with the funct bits
-    val is_load = io.cmd.bits.funct === 0.U 
-    val is_store = io.cmd.bits.funct === 1.U 
-
-    // connecting the inputs to the PE memory
-    memory.io.rs1 := io.cmd.bits.rs1
-    memory.io.rs2 := io.cmd.bits.rs2
-    memory.io.is_load := is_load
-    memory.io.is_store := is_store
-
-    // connecting the output to the PE memory
-    op_result := memory.io.result
-
-    // connecting inputs to keep_register and keep_funct (they work in parallel)
-    keep_reg.io.keep := keep
-    keep_reg.io.in := op_result
-    keep_funct.io.in := io.cmd.bits.funct
-    keep_funct.io.keep := keep
-
-    // connecting register to output of keep_register and keep_funct
-    io.resp.bits.data := keep_reg.io.out
-    //io.was_store := keep_funct.io.out === 1.U 
- 
-    // default, in future they will change
-    io.conn.right.out := 0.U 
-    io.conn.left.out := 0.U 
-
-    // another possible solution may be :
-    
-    
-    io.resp.valid := state_machine.io.resp_valid && !keep_funct.io.out === 1.U
-    
-    
+    // partial addreses managment
+    val partial_address = rs2(18, 16)
+    val is_main_memory = partial_address === 0.U 
+    val is_up_memory = partial_address === up_memory_partial_address.U 
+    val is_down_memory = partial_address === down_memory_partial_address.U 
+    val is_left_memory = partial_address === left_memory_partial_address.U 
+    val is_right_memory = partial_address === right_memory_partial_address.U 
     
 
- //----------------------END DATAPATH-----------------------------
+    // counter signals
+    val n = rs1(31, 16)
+    val main_memory_valid = rs2(18, 16) === 0.U 
 
-}
+    // is my pe busy now ? <=> are my side memories storing values ?
+    val busy = Wire(Bool())
+
+    // memory up outputs
+    val up_memory_busy = Wire(Bool())
+    val output_up_memory = Wire(Bits(width.W ))
+
+    // memory doen outputs
+    val down_memory_busy = Wire(Bool())
+    val output_down_memory = Wire(Bits(width.W ))
+
+    // memory left outputs
+    val left_memory_busy = Wire(Bool())
+    val output_left_memory = Wire(Bits(width.W ))
+
+    // memory right outputs
+    val right_memory_busy = Wire(Bool())
+    val output_right_memory = Wire(Bits(width.W ))
+
+    // counter inputs
+    val stall = Wire(Bool())
+
+    // counter outputs
+    val offset = Wire(Bits(width.W ))
+    val count_done = Wire(Bool())
 
 
+    // memories
 
-/*
-this  module is the state machine of the PE, it has 2 states, but
-in practice it's like they are 3 :
-    reg_free: an idle state in which it waits for valid input
-    full_reg && resp_ready : a state in which I can return a computed result and eventually pipeline my execution if there are new inputs available
-    full_reg && !resp_ready : a state in which I have to wait until my resp is ready to be issued (of course I cannot accept new inputs here)
+    val main_memory = Module(new PE_memory(width))
+    val up_memory = Module(new PE_SideMemory(width, up_memory_partial_address ))
+    val down_memory = Module(new PE_SideMemory(width, down_memory_partial_address ))
+    val left_memory = Module(new PE_SideMemory(width, left_memory_partial_address ))
+    val right_memory = Module(new PE_SideMemory(width, right_memory_partial_address ))
 
-*/
-class PE_control_unit extends Module{
+    // counter
 
-    val io = IO(new Bundle{
+    val counter = Module(new Counter(width))
 
-        val cmd_ready = Output(Bool()) // am I ready to receive new inputs?
-        val cmd_valid = Input(Bool()) // is the new input received valid?
-        val resp_ready = Input(Bool()) // is my output interface ready to receive commands?
-        val resp_valid = Output(Bool()) // am I able to give a valid output in this cycle?
-        val keep = Output(Bool()) // should I buffer my result or keep the execution flowing?
+    counter.io.reset_ := cmd.valid && is_exchange && !busy
+    counter.io.input := n
+    counter.io.stall := stall
 
-    })
+    offset := counter.io.value
+    count_done := counter.io.done
 
-    // renaming
-    val cmd_ready = io.cmd_ready
-    val cmd_valid = io.cmd_valid
-    val resp_ready = io.resp_ready
-    val resp_valid = io.resp_valid
-    val keep = io.keep
+    // source address calculator
 
-    val reg_free :: full_reg :: full_reg_stall :: end_pipeline:: Nil = Enum(4)
+    val src_address_calculator = Module(new SourceAddressCalculator(width))
 
-    val state = Reg(Bits(3.W))
+    val src_address = Wire(Bits(width.W))
+
+    src_address_calculator.io.address := rs1(15, 0)
+    src_address_calculator.io.offset := offset
+    src_address_calculator.io.count_done := count_done
+
+    src_address := src_address_calculator.io.rs1
+
+    // destination address calculator
+
+    val dest_address = Wire(Bits(width.W ))
+
+    val dest_address_calculator = Module(new DestAddressCalculator(width))
+
+    dest_address_calculator.io.in_dest_addr := rs2(15, 0)
+    dest_address_calculator.io.in_dest_offset := offset
+    dest_address_calculator.io.count_done := count_done
+
+    dest_address := dest_address_calculator.io.out_dest_addr
+
+
+    // up queue
+
+    val up_queue_input = Wire(Flipped(Decoupled(new Neighbour)))
+
+    up_queue_input.valid := RegNext(!count_done)
+    up_queue_input.bits.address := RegNext(dest_address)
+    up_queue_input.bits.data := RegNext(main_memory.io.result)
+
+    val up_queue = Queue(up_queue_input)
+
+    up_queue <> conn.up.out
+     /* equivalent (in theory) to :
+
+    conn.up.out.bits.data := up_queue.bits.data
+    conn.up.out.bits.address := up_queue.bits.address
+    conn.up.out.valid := up_queue.valid
+    up_queue.ready := conn.up.out.ready
+    */
+
+    // down queue
+
+    val down_queue_input = Wire(Flipped(Decoupled(new Neighbour)))
+
+    down_queue_input.valid := RegNext(!count_done)
+    down_queue_input.bits.address := RegNext(dest_address)
+    down_queue_input.bits.data := RegNext(main_memory.io.result)
+
+    val down_queue = Queue(down_queue_input)
+
+    down_queue <> conn.down.out
+    /* equivalent (in theory) to :
+
+    conn.down.out.bits.data := down_queue.bits.data
+    conn.down.out.bits.address := down_queue.bits.address
+    conn.down.out.valid := down_queue.valid
+    down_queue.ready := conn.down.out.ready
+    */
     
-    state := reg_free
+    // left queue output
 
-    when(state === reg_free){
+    val left_queue_input = Wire(Flipped(Decoupled(new Neighbour)))
 
-        keep := false.B 
-        cmd_ready := true.B 
-        resp_valid := false.B 
+    left_queue_input.valid := RegNext(!count_done)
+    left_queue_input.bits.address := RegNext(dest_address)
+    left_queue_input.bits.data := RegNext(main_memory.io.result)
 
-        when(!cmd_valid){
-            state := reg_free
-        }.elsewhen(cmd_valid && resp_ready){
-            state := full_reg
-        }.otherwise{ // cmd_valid && !resp_ready
-            state := full_reg_stall
-        }
+    val left_queue = Queue(left_queue_input)
 
-    }.elsewhen(state === full_reg){
+    left_queue <> conn.left.out
 
-        keep := false.B 
-        cmd_ready := true.B 
-        resp_valid := true.B 
-        
-        when(!resp_ready){
-            state := full_reg_stall
-        }.elsewhen(cmd_valid && resp_ready){
-            state := full_reg
-        }.otherwise{ // cmd_valid && resp_ready
-            state := end_pipeline
-        }
+    /* equivalent (in theory) to :
 
-    }.elsewhen(state === full_reg_stall){
+    conn.left.out.bits.data := left_queue.bits.data
+    conn.left.out.bits.address := left_queue.bits.address
+    conn.left.out.valid := left_queue.valid
+    left_queue.ready := conn.left.out.ready
+    */
 
-        keep := true.B 
-        cmd_ready := false.B 
-        resp_valid := true.B 
+    // right queue
 
-        when(!resp_ready){
-            state := full_reg_stall
-        }.elsewhen(resp_ready && cmd_valid){
-            state := full_reg
-        }.otherwise{ // resp_ready && !cmd_valid
-            state := end_pipeline
-        }
-        
+    val right_queue_input = Wire(Flipped(Decoupled(new Neighbour)))
 
-    }.elsewhen(state === end_pipeline){
-        keep := false.B 
-        cmd_ready := true.B 
-        resp_valid := true.B 
-        state := reg_free
-    
-    }.otherwise{ // it should never happen
-        io.cmd_ready := false.B 
-        io.resp_valid := false.B
-        io.keep := true.B 
-        state := reg_free
-    }
+    right_queue_input.valid := RegNext(!count_done)
+    right_queue_input.bits.address := RegNext(dest_address)
+    right_queue_input.bits.data := RegNext(main_memory.io.result)
+
+    val right_queue = Queue(right_queue_input)
+
+    right_queue <> conn.right.out
+    /* equivalent (in theory) to :
+
+    conn.right.out.bits.data := right_queue.bits.data
+    conn.right.out.bits.address := right_queue.bits.address
+    conn.right.out.valid := right_queue.valid
+    right_queue.ready := conn.right.out.ready
+    */
 
 
-}
+    stall := left_queue_input.ready && right_queue_input.ready && up_queue_input.ready && down_queue_input.ready
 
+    // connecting signals to memories
 
-/*
-this module executes basic memory operations:
-    load: when is_load === true
-    store: when is_store === true
+    // main memory
 
-    if is_load === true and is_store === true the behaviour is udefined
-*/
-class PE_memory(width : Int = 32) extends Module{
+    val main_mem_rs1 = Wire(Bits(width.W ))
+    val main_mem_rs2 = Wire(Bits(width.W ))
+    val main_mem_load = Wire(Bool())
+    val main_mem_store = Wire(Bool())
 
-    val io = IO(new Bundle{
-        val rs1 = Input(Bits(width.W))
-        val rs2 = Input(Bits(width.W))
-        val is_load = Input(Bool())
-        val is_store = Input(Bool())
-        val result = Output(Bits(width.W))
-    })
-
-    // conventions
-    // load: funct == 0.U , result := mem(rs1)
-    // store: funct == 1.U, mem(rs2) := rs1
-
-    //register memory
-    val reg_memory = Mem(width, UInt(width.W))
-
-    // renaming
-    val rs1 = io.rs1
-    val rs2 = io.rs2
-    val is_load = io.is_load
-    val is_store = io.is_store
-    val result = io.result
-    
-    when(is_load){ // does a load
-        result := reg_memory(rs1)
-    }.elsewhen(is_store){ // does a store
-        reg_memory(rs2) := rs1
-        result := 100.U // assuming width >= 7
+    when(!count_done){
+        main_mem_rs1 := src_address
+        main_mem_rs2 := 0.U 
+        main_mem_load := true.B 
+        main_mem_store := false.B 
+    }.elsewhen(cmd.valid && (rs2(18, 16) === 0.U)){
+        main_mem_rs1 := rs1
+        main_mem_rs2 := rs2
+        main_mem_load := is_load
+        main_mem_store := is_store
     }.otherwise{
-        result := 0.U 
+        main_mem_rs1 := 0.U 
+        main_mem_rs2 := 0.U 
+        main_mem_load := false.B 
+        main_mem_store := 0.U 
     }
 
+    // up memory
+
+    up_memory.io.rs1 := rs1
+    up_memory.io.rs2 := rs2
+    up_memory.io.is_load := is_load
+    up_memory.io.is_store := is_store
+    up_memory.io.busy := busy
+    up_memory.io.neighbour <> conn.up.in
+    up_memory.io.cmd_valid := cmd.valid
+
+    up_memory_busy := up_memory.io.busy
+    output_up_memory := up_memory.io.op_result
+
+    // down memeory
+
+    down_memory.io.rs1 := rs1
+    down_memory.io.rs2 := rs2
+    down_memory.io.is_load := is_load
+    down_memory.io.is_store := is_store
+    down_memory.io.busy := busy
+    down_memory.io.neighbour <> conn.down.in
+    down_memory.io.cmd_valid := cmd.valid
+
+    down_memory_busy := down_memory.io.busy
+    output_down_memory := down_memory.io.op_result
+
+    // left memory
+
+    left_memory.io.rs1 := rs1
+    left_memory.io.rs2 := rs2
+    left_memory.io.is_load := is_load
+    left_memory.io.is_store := is_store
+    left_memory.io.busy := busy
+    left_memory.io.neighbour <> conn.left.in
+    left_memory.io.cmd_valid := cmd.valid
+
+    left_memory_busy := left_memory.io.busy
+    output_left_memory := left_memory.io.op_result
+
+    // right memory
+
+    right_memory.io.rs1 := rs1
+    right_memory.io.rs2 := rs2
+    right_memory.io.is_load := is_load
+    right_memory.io.is_store := is_store
+    right_memory.io.busy := busy
+    right_memory.io.neighbour <> conn.right.in
+    right_memory.io.cmd_valid := cmd.valid
+
+    right_memory_busy := right_memory.io.busy
+    output_right_memory := right_memory.io.op_result
+
+    // outputs of the module
+
+    resp.valid := cmd.valid && is_load && !busy
+    cmd.ready := resp.ready && !busy
+
+    when(is_main_memory){
+        resp.bits.data := main_memory.io.result
+    }.elsewhen(is_up_memory){
+        resp.bits.data := up_memory.io.op_result
+    }.elsewhen(is_down_memory){
+        resp.bits.data := down_memory.io.op_result
+    }.elsewhen(is_left_memory){
+        resp.bits.data := left_memory.io.op_result
+    }.elsewhen(is_right_memory){
+        resp.bits.data := right_memory.io.op_result
+    }
 }
+

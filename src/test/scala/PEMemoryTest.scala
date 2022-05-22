@@ -6,19 +6,7 @@ import chisel3.util._
 import org.scalatest._
 
 
-/*
-interface of PE_memory:
 
-    val rs1 = Input(Bits(width.W))
-    val rs2 = Input(Bits(width.W))
-    val is_load = Input(Bool())
-    val is_store = Input(Bool())
-    val result = Output(Bits(width.W))
-
-    load: result := mem(rs1)
-    store: mem(rs2) := rs1
-
-*/
 
 class PELoadStoreTest(m: PE_memory) extends PeekPokeTester(m){
 

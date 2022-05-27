@@ -41,11 +41,11 @@ class Matrix(n: Int) extends LazyRoCCModuleImpCustom{
   }
 
   for (i<-0 to n; j<-0 to n; k<-0 to n){
-    matrix(i)(j)(k).io.c.up.out := matrix(module(i + 1))(j)(k).io.c.down.in
-    matrix(i)(j)(k).io.c.down.out := matrix(module(i - 1))(j)(k).io.c.up.in
-    matrix(i)(j)(k).io.c.left.out := matrix(i)(module(j + 1))(k).io.c.right.in
-    matrix(i)(j)(k).io.c.right.out := matrix(i)(module(j - 1))(k).io.c.left.in
-    matrix(i)(j)(k).io.c.ingoing.out := matrix(i)(j)(module(k + 1)).io.c.outgoing.in
+    matrix(i)(j)(k).io.conn.up.out := matrix(module(i + 1))(j)(k).io.conn.down.in
+    matrix(i)(j)(k).io.conn.down.out := matrix(module(i - 1))(j)(k).io.conn.up.in
+    matrix(i)(j)(k).io.conn.left.out := matrix(i)(module(j + 1))(k).io.conn.right.in
+    matrix(i)(j)(k).io.conn.right.out := matrix(i)(module(j - 1))(k).io.conn.left.in
+    matrix(i)(j)(k).io.conn.ingoing.out := matrix(i)(j)(module(k + 1)).io.conn.outgoing.in
     matrix(i)(j)(k).io.c.outgoing.out := matrix(i)(j)(module(k - 1)).io.c.ingoing.in
   }
 
@@ -67,43 +67,53 @@ class Torus(n : Int = 2) extends LazyRoCCModuleImpCustom{
     else return i
   }
 
+  def giveOrder(i : Int, j : Int): Int = {
+    return i*n + j
+
+  }
+
   val controller = Module(new Controller(5))
 
-  var temp = Array.ofDim[PE](n, n, n)
+  var temp = Array.ofDim[PE](n, n)
 
-  for (i<-0 until n; j<-0 until n; k<-0 until n){
-    temp(i)(j)(k) = Module(new PE(i+j+k)) // id will change
+  for (i<-0 until n; j<-0 until n){
+    temp(i)(j) = Module(new PE())
   }
 
   val pe = temp
 
+  val arbiter = Module(new LoadArbiter(16, n*n))
+
   val full_PE_cmd_ready = Wire(Bool())
-  val full_PE_resp_valid = Wire(Bool())
-  val full_PE_resp_bits_data = Wire(Bits(32.W))
+  val full_PE_resp_bits_data = Vec(n*n, Bits(16.W ))
 
-  for (i<-0 until n; j<-0 until n; k<-0 until n){
+  for (i<-0 until n; j<-0 until n){
 
-    pe(i)(j)(k).io.cmd.valid := controller.io.cmd.valid 
-    pe(i)(j)(k).io.cmd.bits.rs1 := controller.io.cmd.bits.rs1
-    pe(i)(j)(k).io.cmd.bits.rs2 := controller.io.cmd.bits.rs2
-    pe(i)(j)(k).io.cmd.bits.funct := controller.io.cmd.bits.funct
-    pe(i)(j)(k).io.resp.ready := controller.io.resp.ready
+    pe(i)(j).io.cmd.valid := controller.io.cmd.valid 
+    pe(i)(j).io.cmd.bits.rs1 := controller.io.cmd.bits.rs1
+    pe(i)(j).io.cmd.bits.rs2 := controller.io.cmd.bits.rs2
+    pe(i)(j).io.cmd.bits.funct := controller.io.cmd.bits.funct
+    pe(i)(j).io.resp.ready := arbiter.io.in_ready
 
     
 
-    full_PE_cmd_ready := pe.flatMap( _.flatMap(_.map(_.io.cmd.ready))).reduce(_ & _) //.io.cmd.ready
-    full_PE_resp_valid := pe.flatMap( _.flatMap(_.map(_.io.resp.valid))).reduce(_ & _) // .io.resp.valid 
-    full_PE_resp_bits_data := pe.flatMap( _.flatMap(_.map(_.io.resp.bits.data))).reduce(_ & _) // .io.resp.bits.data
+    full_PE_cmd_ready := pe.flatMap(_.map(_.io.cmd.ready)).reduce(_ & _) //.io.cmd.ready
+    arbiter.io.in_valid := pe.flatMap(_.map(_.io.resp.valid)).reduce(_ & _) // .io.resp.valid 
+    arbiter.io.in_vec(giveOrder(i, j)) := pe(i)(j).io.resp.bits.data // .io.resp.bits.data
 
   }
 
-  controller.io.cmd.ready := full_PE_cmd_ready
-  controller.io.resp.valid := full_PE_resp_valid
-  controller.io.resp.bits.data := full_PE_resp_bits_data
+  arbiter.io.out.ready := controller.resp.ready
 
-  for (i<-0 until n; j<-0 until n; k<-0 until n){
-    pe(i)(j)(k).io.conn.right.in <> pe(module(i + 1))(j)(k).io.conn.left.out
-    pe(i)(j)(k).io.conn.left.in <> pe(module(i - 1))(j)(k).io.conn.right.out
+  controller.io.cmd.ready := full_PE_cmd_ready
+  controller.io.resp.valid := arbiter.io.out.valid
+  controller.io.resp.bits.data := arbiter.io.out.bits.data
+
+  for (i<-0 until n; j<-0 until n){
+    pe(i)(j).io.conn.right.in <> pe(module(i + 1))(j).io.conn.left.out
+    pe(i)(j).io.conn.left.in <> pe(module(i - 1))(j).io.conn.right.out
+    pe(i)(j).io.conn.up.in <> pe(i)(module(j + 1)).io.conn.down.out
+    pe(i)(j).io.conn.down.in <> pe(i)(module(j - 1)).io.conn.up.out
   }
 
 

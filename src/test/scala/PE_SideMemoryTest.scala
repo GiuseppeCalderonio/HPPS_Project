@@ -240,10 +240,11 @@ class PE_SideMemoryTests extends ChiselFlatSpec {
   val testerArgs = Array("")
 
   val id = 2
+  val width = 16
 
   behavior of "WrongLoadAndStoreTest"
   it should "Do anything if the commands of load and stores are not for this specific memory" in {
-    chisel3.iotesters.Driver.execute( testerArgs, () => new PE_SideMemory(32, id)) {
+    chisel3.iotesters.Driver.execute( testerArgs, () => new PE_SideMemory(16, id)) {
       c => new WrongLoadAndStoreTest(c, id)
     } should be (true)
   }
@@ -251,14 +252,14 @@ class PE_SideMemoryTests extends ChiselFlatSpec {
 
   behavior of "NeighbourPrecedenceTest"
   it should "Always give priority to neighbour requests" in {
-    chisel3.iotesters.Driver.execute( testerArgs, () => new PE_SideMemory(32, id)) {
+    chisel3.iotesters.Driver.execute( testerArgs, () => new PE_SideMemory(16, id)) {
       c => new NeighbourPrecedenceTest(c, id)
     } should be (true)
   }
 
   behavior of "BusyValidTest"
   it should "Not perform any operation when at least one between !busy and cmd_valid is true" in {
-    chisel3.iotesters.Driver.execute( testerArgs, () => new PE_SideMemory(32, id)) {
+    chisel3.iotesters.Driver.execute( testerArgs, () => new PE_SideMemory(16, id)) {
       c => new BusyValidTest(c, id)
     } should be (true)
   }

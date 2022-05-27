@@ -125,6 +125,6 @@ class TorusAcceleratorTESTModule(outer: TorusAccelerator, opcodes: OpcodeSet) ex
   io.resp.bits.rd := myModuleImpl.io.resp.bits.rd
   io.resp.bits.data := myModuleImpl.io.resp.bits.data
   io.interrupt := false.B //myModuleImpl.io.interrupt
-  io.busy := false.B //myModuleImpl.io.busy
+  io.busy := myModuleImpl.io.busy
   
 }

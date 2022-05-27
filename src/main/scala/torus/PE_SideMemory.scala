@@ -14,18 +14,18 @@ import freechips.rocketchip.tilelink._
 import freechips.rocketchip.util.InOrderArbiter
 import javax.lang.model.element.ModuleElement
 
-class Neighbour() extends Bundle{
-    val data = Bits(32.W) 
-    val address = Bits(32.W )
+class Neighbour(val widh : Int = 16) extends Bundle{
+    val data = Bits(widh.W) 
+    val address = Bits(widh.W )
 }
 
-class PE_SideMemory(width: Int = 32, pe_address: Int) extends Module{
+class PE_SideMemory(width: Int = 16, pe_address: Int) extends Module{
 
     val io = IO(new Bundle{
 
-        val neighbour = Flipped(Decoupled(new Neighbour()))
-        val rs1 = Input(Bits(width.W ))
-        val rs2 = Input(Bits(width.W ))
+        val neighbour = Flipped(Decoupled(new Neighbour(width)))
+        val rs1 = Input(Bits((width * 2).W ))
+        val rs2 = Input(Bits((width * 2).W ))
         val is_load = Input(Bool())
         val is_store = Input(Bool())
         val cmd_valid = Input(Bool())
@@ -59,7 +59,7 @@ class PE_SideMemory(width: Int = 32, pe_address: Int) extends Module{
     // this signal says whether the PE in which the load/store has to be done is this or not
     // basically each pe is addressed by the 3 bits of rs2 (18, 16) and if it is equal to the 
     // address specified at creation time the load/store is accepted
-    val is_pe_address_valid = rs2(18, 16) === pe_address.U 
+    val is_pe_address_valid = rs2(width + 2, width) === pe_address.U 
 
     reg_memory.io.rs1 := mem_rs1
     reg_memory.io.rs2 := mem_rs2
@@ -79,8 +79,8 @@ class PE_SideMemory(width: Int = 32, pe_address: Int) extends Module{
     }.elsewhen(cmd_valid && is_pe_address_valid && !busy){
         mem_store := is_store
         mem_load := is_load
-        mem_rs1 := rs1
-        mem_rs2 := rs2
+        mem_rs1 := rs1(width - 1, 0)
+        mem_rs2 := rs2(width - 1, 0)
     }.otherwise{
         mem_load := false.B 
         mem_store := false.B 

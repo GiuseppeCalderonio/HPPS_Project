@@ -11,6 +11,8 @@ int main(){
     int rs1 = 4;
     int rs2 = 3;
     int funct = 3;
+    int a[4];
+    int s, l;
 
     printf("Start simulation\n");
 
@@ -18,41 +20,95 @@ int main(){
         // load : funct === 0
         // store : funct === 1
         // get_load : funct === 2
+        // exchange : funct === 3s
 
-
-    // do a store of 3 in all the PEs in the address 5
+    rs1 = 3;
+    rs2 = 5;
+    ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 1);
+    printf("First operation -> store completed: result is  %d  (expected is 13)\n", rd); // mem(5) := 3
     
-    for(int i =0; i < 5; i++) {
-    
-        rs1 = 3+i;
-        rs2 = 5+i;
-        ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 1); // 2952794129 = 0xb0001011
-        printf("First operation -> store completed: result is  %d  (expected is 0)\n", rd);
-    }
 
     // do a load of the memory address 5 in all the PEs
+    // rd = mem(5)
     
-    for(int i =0; i < 5; i++) {
-        rs1 = 5+i;
-        ROCC_INSTRUCTION_DS(0, rd, rs1, 0);
-        printf("Second operation -> load completed: result is  %d  (expected is 0)\n", rd);
-    }
-
-    // execute a nop
-    //ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 2);
-    //asm volatile("nop");
+    rs2 = 5;
+    ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 0); // queue := mem(5) [== 3]
+    printf("Second operation -> load completed: result is  %d  (expected is 13)\n", rd );
+    
 
     // get the load result of the last load operation
-    for(int i =0; i < 5; i++) {
+    int i = 0;
+    for(i =0; i < 4; i++) {
         rd = i;
-        ROCC_INSTRUCTION_D(0, rd, 2);
-        printf("Third operation operation -> get_load completed: result is  %d  (expected is 3)\n", rd);
+        ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 2);
+        printf(" %d -th operation operation -> get_load completed: result is  %d  (expected is 3)\n", i + 3, rd); // rd := queue
     }
-    // load rs1, 4
-    // load rs2, 3
-    // opcode ...
-    // store resp.rd, resp.data
-    
+
+    // data exchange test: exchange(src = 6, n = 3, dest = 9)
+
+    // store another set of values
+
+    printf("Now data exchange!\n");
+
+    int n = 3;
+    rs2 = 6;
+    rs1 = 20;
+
+    for(i = 0; i < n; i++){
+        rd = i;
+        rs1 = 20 + i;
+        rs2 = 6 + i;
+        ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 1);
+        printf(" %d -th prelinimary store done, result is : %d (expected 13)\n", i+1, rd); // mem(6 + i) := 10 + i
+                                                         // mem(6) := 10
+                                                         // mem(7) := 11
+                                                         // mem(8) := 12
+                                                         
+    }
+
+    // data exchange command
+
+    rd = 5;
+    rs1 = 6 + (n << 16); // source + n
+    rs2 = 9; // dest
+    ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 3); //exchange(src = 6, n = 3, dest = 9)
+    printf("Exchange done, result is : %d (expected 13)\n", rd);
+
+    // now load to see if results are actually stored
+
+    rd = 5;
+    rs2 = 9 + (1 << 16); // first memory (up)
+    ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 0); // queue := memUP(9)
+    printf("Load done, result is : %d (expected 13)\n", rd);
+
+    for(i = 0; i < 4; i++){
+        ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 2); // queue := memUP(9)
+        printf("Load done, result is : %d (expected 20)\n", rd);
+    }
+
+    rd = 5;
+    rs2 = 10 + (1 << 16); // first memory (up)
+    ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 0); // queue := memUP(9)
+    printf("Load done, result is : %d (expected 13)\n", rd);
+
+    for(i = 0; i < 4; i++){
+        ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 2); // queue := memUP(9)
+        printf("Load done, result is : %d (expected 21)\n", rd);
+    }
+
+    rd = 5;
+    rs2 = 11 + (1 << 16); // first memory (up)
+    ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 0); // queue := memUP(9)
+    printf("Load done, result is : %d (expected 13)\n", rd);
+
+    for(i = 0; i < 4; i++){
+        ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 2); // queue := memUP(9)
+        printf("Load done, result is : %d (expected 22)\n", rd);
+    }
+
+
+
+
 
 
     printf("End simulation\n");

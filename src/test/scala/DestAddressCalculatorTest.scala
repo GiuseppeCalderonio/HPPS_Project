@@ -28,7 +28,7 @@ class ComputeDestAddressTest(m : DestAddressCalculator) extends PeekPokeTester(m
 
     step(1)
 
-    expect(m.io.out_dest_addr, (3+5).U )
+    expect(m.io.out_dest_addr, (3).U )
 
     poke(m.io.in_dest_addr, 30.U )
     poke(m.io.in_dest_offset, 2.U )

@@ -32,8 +32,19 @@ class SourceAddressCalculator(width : Int = 32) extends Module{
     val count_done = io.count_done
     val rs1 = io.rs1
 
+    /*
+    val addressCalculator = Module(new DestAddressCalculator(width))
+
+    addressCalculator.io.in_dest_addr := address
+    addressCalculator.io.in_dest_offset := offset
+    addressCalculator.io.count_done := count_done
+
+    rs1 := addressCalculator.io.out_dest_addr
+    */
+
     // additional signals
 
+    
     val mux1 = Wire(Bool())
     val mux2 = Wire(Bool())
     val register_buffer = RegInit(Bits(width.W), 0.U )
@@ -42,13 +53,14 @@ class SourceAddressCalculator(width : Int = 32) extends Module{
 
     // state machine
 
+    
     val state_machine = Module(new AddressCalculator_StateMachine())
 
     state_machine.io.count_done := count_done
 
     mux1 := state_machine.io.mux1
     mux2 := state_machine.io.mux2
-
+    
     // datapath
 
     mux1_result := Mux(mux1, register_buffer, address)
@@ -57,6 +69,7 @@ class SourceAddressCalculator(width : Int = 32) extends Module{
     rs1 := mux1_result + mux2_result
 
     register_buffer := mux1_result
+
 }
 
 

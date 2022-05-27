@@ -12,7 +12,7 @@ import freechips.rocketchip.diplomacy._
 import freechips.rocketchip.rocket._
 import freechips.rocketchip.tilelink._
 import freechips.rocketchip.util.InOrderArbiter
-
+/*
 class Counter(width: Int = 32) extends Module{
 
     val io = IO(new Bundle{
@@ -41,6 +41,8 @@ class Counter(width: Int = 32) extends Module{
     val equal = Wire(Bool()) 
 
     val is_input_zero = input === 0.U 
+
+    
 
     val mux = Wire(Bool())
 
@@ -72,6 +74,60 @@ class Counter(width: Int = 32) extends Module{
     // for testing purposes
     io.equal_out := equal
     io.output := input_buffer
+
+}*/
+
+class Counter(width: Int = 32) extends Module{
+
+    val io = IO(new Bundle{
+        val input = Input(Bits(width.W))
+        val reset_ = Input(Bool())
+        val stall = Input(Bool())
+        val value = Output(Bits(width.W))
+        val done = Output(Bool())
+        val equal_out = Output(Bool())
+        val output = Output(Bits(width.W))
+    })
+
+    val input = io.input
+    val reset_ = io.reset_
+    val stall = io.stall
+    val value = io.value
+    val done = io.done
+
+    // useful additional signlas
+
+    val input_buffer = RegInit(Bits(width.W), 6.U )
+    val register_counter = RegInit(Bits(width.W), 6.U )
+    val count = Wire(Bits(width.W))
+    val in = Wire(Bits(width.W))
+
+    val equal = Wire(Bool()) 
+
+    val is_input_zero = input === 0.U 
+
+    val res = !is_input_zero && reset_
+
+    // datapath
+
+    register_counter := Mux(res, 1.U, count)
+
+    in := input_buffer
+
+    count :=  register_counter + Mux(stall || equal, 0.U, 1.U )
+
+    input_buffer := Mux(res, input, in)
+
+    value := Mux(res, 0.U, register_counter)
+
+    equal := in === register_counter
+
+    done := Mux(res, false.B , equal)
+
+    // for testing purposes
+    io.equal_out := equal
+    io.output := input_buffer
+
 }
 
 

@@ -1069,7 +1069,7 @@ class InvlaidFunctTest(m : CustomInterfaceControllerTest, n: Int) extends PeekPo
 
 class ControllerTest extends ChiselFlatSpec {
 
-  /*
+  
   val testerArgs = Array("")
 
   val n = 3
@@ -1129,7 +1129,7 @@ class ControllerTest extends ChiselFlatSpec {
       c => new InvlaidFunctTest(c, n)
     } should be (true)
   }
-  */
+  
 
 }
 

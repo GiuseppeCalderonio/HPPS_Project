@@ -26,6 +26,7 @@ class DestAddressCalculator(width: Int = 32) extends Module{
 
     })
 
+    /*
     val in = Wire(Flipped(Decoupled(Bits(width.W))))
     in.valid := true.B 
     in.bits := io.in_dest_addr
@@ -34,5 +35,14 @@ class DestAddressCalculator(width: Int = 32) extends Module{
 
     out.ready := io.count_done
     io.out_dest_addr := Mux(io.count_done, io.in_dest_addr, out.bits) + io.in_dest_offset
+    */
+
+    val addressCalculator = Module(new SourceAddressCalculator(width))
+
+    addressCalculator.io.address := io.in_dest_addr
+    addressCalculator.io.offset := io.in_dest_offset
+    addressCalculator.io.count_done := io.count_done
+
+    io.out_dest_addr := addressCalculator.io.rs1
 
 }

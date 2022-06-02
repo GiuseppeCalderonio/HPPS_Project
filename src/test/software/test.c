@@ -1,6 +1,16 @@
 
 #include <stdio.h>
 #include "rocc.h"
+#define LOAD 0
+#define STORE 1
+#define GET_LOAD 2
+#define EXCHANGE 3
+#define MAIN 0
+#define UP 1
+#define DOWN 2
+#define LEFT 3
+#define RIGHT 4
+#define PES 4
 
 int main(){
 
@@ -11,8 +21,6 @@ int main(){
     int rs1 = 4;
     int rs2 = 3;
     int funct = 3;
-    int a[4];
-    int s, l;
 
     printf("Start simulation\n");
 
@@ -20,98 +28,91 @@ int main(){
         // load : funct === 0
         // store : funct === 1
         // get_load : funct === 2
-        // exchange : funct === 3s
+        // exchange : funct === 3
 
-    rs1 = 3;
-    rs2 = 5;
-    ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 1);
-    printf("First operation -> store completed: result is  %d  (expected is 13)\n", rd); // mem(5) := 3
+
+    store(5, 3, MAIN);  // memMain(5) := 3
     
 
-    // do a load of the memory address 5 in all the PEs
-    // rd = mem(5)
+    load(5, MAIN, 3); // rd := memMain(5) [== 3]
     
-    rs2 = 5;
-    ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 0); // queue := mem(5) [== 3]
-    printf("Second operation -> load completed: result is  %d  (expected is 13)\n", rd );
-    
-
-    // get the load result of the last load operation
-    int i = 0;
-    for(i =0; i < 4; i++) {
-        rd = i;
-        ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 2);
-        printf(" %d -th operation operation -> get_load completed: result is  %d  (expected is 3)\n", i + 3, rd); // rd := queue
-    }
-
-    // data exchange test: exchange(src = 6, n = 3, dest = 9)
-
-    // store another set of values
 
     printf("Now data exchange!\n");
 
-    int n = 3;
+    int n = 10;
     rs2 = 6;
     rs1 = 20;
 
+    int i = 0;
+
     for(i = 0; i < n; i++){
-        rd = i;
-        rs1 = 20 + i;
-        rs2 = 6 + i;
-        ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 1);
-        printf(" %d -th prelinimary store done, result is : %d (expected 13)\n", i+1, rd); // mem(6 + i) := 10 + i
-                                                         // mem(6) := 10
-                                                         // mem(7) := 11
-                                                         // mem(8) := 12
-                                                         
+        store(6 + i, 20 + i, MAIN); // memMain(6 + i) := 20 + i
+        // memMain(6) := 20
+        // memMain(7) := 21
+        // memMain(8) := 22
+        // memMain(9) := 23
+        // memMain(10) := 24
+        // memMain(11) := 25
+        // memMain(12) := 26
+        // memMain(13) := 27
+        // memMain(14) := 28
+        // memMain(15) := 29
+
+                             
     }
 
     // data exchange command
 
-    rd = 5;
-    rs1 = 6 + (n << 16); // source + n
-    rs2 = 9; // dest
-    ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 3); //exchange(src = 6, n = 3, dest = 9)
-    printf("Exchange done, result is : %d (expected 13)\n", rd);
+    exchange(6, 10, 9);
 
     // now load to see if results are actually stored
 
-    rd = 5;
-    rs2 = 9 + (1 << 16); // first memory (up)
-    ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 0); // queue := memUP(9)
-    printf("Load done, result is : %d (expected 13)\n", rd);
-
-    for(i = 0; i < 4; i++){
-        ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 2); // queue := memUP(9)
-        printf("Load done, result is : %d (expected 20)\n", rd);
+    for(i = 0; i < n; i++){
+        load(9 + i, UP, 20 + i);
+        load(9 + i, DOWN, 20 + i);
+        load(9 + i, LEFT, 20 + i);
+        load(9 + i, RIGHT, 20 + i);
     }
-
-    rd = 5;
-    rs2 = 10 + (1 << 16); // first memory (up)
-    ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 0); // queue := memUP(9)
-    printf("Load done, result is : %d (expected 13)\n", rd);
-
-    for(i = 0; i < 4; i++){
-        ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 2); // queue := memUP(9)
-        printf("Load done, result is : %d (expected 21)\n", rd);
-    }
-
-    rd = 5;
-    rs2 = 11 + (1 << 16); // first memory (up)
-    ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 0); // queue := memUP(9)
-    printf("Load done, result is : %d (expected 13)\n", rd);
-
-    for(i = 0; i < 4; i++){
-        ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, 2); // queue := memUP(9)
-        printf("Load done, result is : %d (expected 22)\n", rd);
-    }
-
-
-
 
 
 
     printf("End simulation\n");
 
     return 0;
+}
+
+void load(int address, int memory, int expected){
+
+    int rs2 = address + (memory << 16);
+    int rs1 = 0;
+    int rd = 0;
+    ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, LOAD);
+    printf("Load completed, result is : %d (expected 13)\n", rd);
+
+    for(int i = 0; i < PES; i++){
+        ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, GET_LOAD);
+        printf("Get_Load completed, result is : %d (expected %d)\n", rd, expected);
+        if (rd != expected){
+            printf("ERROR! Watch above !\n");
+            exit(0);
+        }
+    }
+}
+
+void store(int address, int value, int memory){
+    int rs1 = value;
+    int rs2 = address + (memory << 16);
+    int rd = 0;
+    ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, STORE);
+    printf("Store completed: result is  %d  (expected is 13)\n", rd);
+}
+
+void exchange(int src, int n_size, int dest){
+
+    int rs1 = src + (n_size << 16);
+    int rs2 = dest;
+    int rd = 0;
+    ROCC_INSTRUCTION_DSS(0, rd, rs1, rs2, EXCHANGE);
+    printf("Exchange completed: result is  %d  (expected is 13)\n", rd);
+
 }

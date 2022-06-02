@@ -589,7 +589,7 @@ class SideMemoryExchangeTest(m : PE) extends PeekPokeTester(m){
 
 
 class PETest extends ChiselFlatSpec {
-/*
+
   val testerArgs = Array("")
 
   behavior of "LoadAndStoreMainMemoryTest"
@@ -628,5 +628,5 @@ class PETest extends ChiselFlatSpec {
       c => new SideMemoryExchangeTest(c)
     } should be (true)
   } 
-  */
+  
 }

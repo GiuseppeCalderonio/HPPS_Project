@@ -15,51 +15,11 @@ import freechips.rocketchip.tilelink._
 import freechips.rocketchip.util._
 
 /*
-// a scatch of implementation of the matrix connections
-class Matrix(n: Int) extends LazyRoCCModuleImpCustom{
-
-
-  def module(k: Int): Int = {
-    val result = k % n
-    result
-
-  }
-
-  val matrix = Array.ofDim[MatrixElement](n, n, n)
-
-  //io.resp := ??
-
-  // initialize the matrix
-  
-  for (i<-0 to n; j<-0 to n; k<-0 to n){
-    matrix(i)(j)(k) := new MatrixElement
-  }
-
-  // connect the matrix with the core
-  for (i<-0 to n; j<-0 to n; k<-0 to n){
-    matrix(i)(j)(k).io.cmd <> io.cmd
-  }
-
-  for (i<-0 to n; j<-0 to n; k<-0 to n){
-    matrix(i)(j)(k).io.conn.up.out := matrix(module(i + 1))(j)(k).io.conn.down.in
-    matrix(i)(j)(k).io.conn.down.out := matrix(module(i - 1))(j)(k).io.conn.up.in
-    matrix(i)(j)(k).io.conn.left.out := matrix(i)(module(j + 1))(k).io.conn.right.in
-    matrix(i)(j)(k).io.conn.right.out := matrix(i)(module(j - 1))(k).io.conn.left.in
-    matrix(i)(j)(k).io.conn.ingoing.out := matrix(i)(j)(module(k + 1)).io.conn.outgoing.in
-    matrix(i)(j)(k).io.c.outgoing.out := matrix(i)(j)(module(k - 1)).io.c.ingoing.in
-  }
-
-
-  
-}
-*/
-
-/*
 this module is the "main" module, which connects and contains all the high level
 components, so the controller with the set of PEs
 
 */
-class Torus(n : Int = 2) extends LazyRoCCModuleImpCustom{
+class Torus(n : Int = 2, io_controller_queue_size : Int = 5, width : Int = 32, pe_neighbour_queue_size : Int = 3) extends LazyRoCCModuleImpCustom{
 
   def module(i : Int ): Int = {
     if(i < 0) return i + n
@@ -72,12 +32,12 @@ class Torus(n : Int = 2) extends LazyRoCCModuleImpCustom{
 
   }
 
-  val controller = Module(new Controller(5))
+  val controller = Module(new Controller(io_controller_queue_size))
 
   var temp = Array.ofDim[PE](n, n)
 
   for (i<-0 until n; j<-0 until n){
-    temp(i)(j) = Module(new PE())
+    temp(i)(j) = Module(new PE(width, pe_neighbour_queue_size))
   }
 
   val pe = temp
@@ -97,9 +57,9 @@ class Torus(n : Int = 2) extends LazyRoCCModuleImpCustom{
 
     
 
-    full_PE_cmd_ready := pe.flatMap(_.map(_.io.cmd.ready)).reduce(_ & _) //.io.cmd.ready
-    arbiter.io.in_valid := pe.flatMap(_.map(_.io.resp.valid)).reduce(_ & _) // .io.resp.valid 
-    arbiter.io.in_vec(giveOrder(i, j)) := pe(i)(j).io.resp.bits.data // .io.resp.bits.data
+    full_PE_cmd_ready := pe.flatMap(_.map(_.io.cmd.ready)).reduce(_ & _)
+    arbiter.io.in_valid := pe.flatMap(_.map(_.io.resp.valid)).reduce(_ & _)
+    arbiter.io.in_vec(giveOrder(i, j)) := pe(i)(j).io.resp.bits.data 
 
   }
 
@@ -119,36 +79,4 @@ class Torus(n : Int = 2) extends LazyRoCCModuleImpCustom{
 
   controller.io.rocc <> io
 
-/*
-
-
-  for(i <- 0 until n){
-    temp = temp :+ Module(new PE(i))
-  }
-
-  val pe = temp
-
-  
-  for(i <- 0 until n){
-    pe(i).io.conn.right.in <> pe(module(i + 1)).io.conn.left.out
-    pe(i).io.conn.left.in <> pe(module(i - 1)).io.conn.right.out
-  }
-
-  controller.io.rocc <> io
-
-  pe.seq.foreach( pe_i => {
-  
-    pe_i.io.cmd.valid := controller.io.cmd.valid 
-    pe_i.io.cmd.bits.rs1 := controller.io.cmd.bits.rs1
-    pe_i.io.cmd.bits.rs2 := controller.io.cmd.bits.rs2
-    pe_i.io.cmd.bits.funct := controller.io.cmd.bits.funct
-    pe_i.io.resp.ready := controller.io.resp.ready
-  
-  })
-
-  controller.io.cmd.ready := pe.map(_.io.cmd.ready).reduce(_ & _)
-  controller.io.resp.valid := pe.map(_.io.resp.valid).reduce(_ & _)
-  controller.io.resp.bits.data := pe.map(_.io.resp.bits.data).reduce(_ & _)
-
-  */
 }

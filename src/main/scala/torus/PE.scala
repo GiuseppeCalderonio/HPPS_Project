@@ -30,7 +30,7 @@ class Connections(width: Int = 32) extends Bundle{
 }
 
 
-class PE( width: Int = 32,
+class PE( width: Int = 32, queue_size : Int = 3,
          load_funct: Int = 0, store_funct: Int = 1, exchange_funct: Int = 3,
          up_memory_partial_address: Int = 1,
          down_memory_partial_address: Int = 2,
@@ -168,7 +168,7 @@ class PE( width: Int = 32,
 
 
 
-    val up_queue = Queue(up_queue_input, 3)
+    val up_queue = Queue(up_queue_input, queue_size)
 
     conn.up.out <> up_queue 
     /* equivalent (in theory) to :
@@ -188,7 +188,7 @@ class PE( width: Int = 32,
     down_queue_input.bits.address := /*RegNext(*/dest_address//)
     down_queue_input.bits.data := /*RegNext(*/main_memory.io.result//)
 
-    val down_queue = Queue(down_queue_input, 3)
+    val down_queue = Queue(down_queue_input, queue_size)
 
     down_queue <> conn.down.out
     /* equivalent (in theory) to :
@@ -207,7 +207,7 @@ class PE( width: Int = 32,
     left_queue_input.bits.address := /*RegNext(*/dest_address//)
     left_queue_input.bits.data := /*RegNext(*/main_memory.io.result//)
 
-    val left_queue = Queue(left_queue_input, 3)
+    val left_queue = Queue(left_queue_input, queue_size)
 
     left_queue <> conn.left.out
 
@@ -227,7 +227,7 @@ class PE( width: Int = 32,
     right_queue_input.bits.address := /*RegNext(*/dest_address//)
     right_queue_input.bits.data := /*RegNext(*/main_memory.io.result//)
 
-    val right_queue = Queue(right_queue_input, 3)
+    val right_queue = Queue(right_queue_input, queue_size)
 
     right_queue <> conn.right.out
     /* equivalent (in theory) to :

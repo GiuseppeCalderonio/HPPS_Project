@@ -1,3 +1,3 @@
 # HPPS_Project
 
-my new good project
+Chipyard implementation of a torus interconnect implmented as an hardware accelerator

@@ -18,4 +18,4 @@ neighbour of a PE is any other PE physically linked to it through the torus topo
 mances of the operation do not depend on the number of elements of the matrix (like a common
 load, as reported later in this document), but only on the number of data blocks to exchange.
 
-For further reference, [here](./HTTPS_Report_Torus.pdf) is a complete description of the project
+For further reference, [here](./HPPS_Report_Torus.pdf) is a complete description of the project
